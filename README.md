@@ -4,51 +4,57 @@ A modern, responsive web application designed for passengers and drivers to easi
 
 ---
 
-## 📌 Project Overview (ව්යාපෘති විස්තරය)
+## 📌 Project Overview
 
-**Taxi & Cab Service Booking Platform** යනු මගීන්ට (Passengers) සහ රියදුරන්ට (Drivers) පහසුවෙන් ටැක්සි රථ වෙන් කරගැනීමට සහ කළමනාකරණය කිරීමට නිර්මාණය කරන ලද වෙබ් යෙදුමකි (Web Application).
+The **Taxi & Cab Service Booking Platform** is a web-based application built to streamline cab booking operations for passengers, drivers, and administrators. The platform delivers an intuitive booking experience, transparent fare estimation, dynamic driver assignment, and transaction record tracking.
 
-මෙහි ප්රධාන අරමුණ වන්නේ **Object-Oriented Programming (OOP)** සංකල්ප, **Data Management / File Handling**, සහ **Java Web Technologies** භාවිතයෙන් ප්රායෝගික, කාර්යක්ෂම සහ පරිශීලක හිතකාමී පද්ධතියක් ගොඩනැගීමයි.
-
----
-
-## 🎯 Key Objectives (ප්රධාන අරමුණු)
-
-1. **OOP Concepts Integration (වස්තු-නැඹුරු වැඩසටහන්කරණ සංකල්ප)**:
-   - **Encapsulation (ගුලිගත කිරීම)**: Private data fields with getters/setters in entities (User, Driver, Passenger, Booking, Payment, Vehicle).
-   - **Inheritance (උරුමවීම)**: `User` base class inherited by `Passenger`, `Driver`, and `Admin`.
-   - **Polymorphism (බහුරූපතාව)**: Method overriding for customized fare calculations, notification services, and payment processors.
-   - **Abstraction (වියුක්තකරණය)**: Abstract classes and Interfaces for services (e.g., `IBookingService`, `IPaymentGateway`, `VehicleFactory`).
-
-2. **Data Management & CRUD Operations (දත්ත කළමනාකරණය)**:
-   - File Read/Write (e.g., `.txt` / `.dat` file handling) or MySQL Database integration.
-   - Implementation of at least 3 core CRUD operations:
-     - 🚗 Ride/Booking Management (Create, View, Update status, Cancel)
-     - 👤 User & Driver Profiles (Register, View profile, Update details, Deactivate)
-     - 💳 Payment & Billing Records (Record transaction, View invoice, Refund/Update, Delete)
-
-3. **User-Friendly Interface (පරිශීලක හිතකාමී අතුරුමුහුණත)**:
-   - Responsive, modern UI using HTML5, CSS3 (Bootstrap / Custom CSS), and JavaScript.
-   - Interactive booking form, ride status tracker, and driver availability dashboard.
-
-4. **Team Collaboration & Version Control**:
-   - Version control using Git and GitHub with structured commit history and clear branching strategy.
+The primary academic goal of this project is to showcase real-world implementation of **Object-Oriented Programming (OOP)** principles, robust **Data Management / File Handling**, and **Java Web Technologies** following clean architectural patterns.
 
 ---
 
-## 🛠️ Technology Stack (තාක්ෂණික මෙවලම්)
+## 🎯 Key Objectives
 
-| Component | Technology |
+### 1. Object-Oriented Programming (OOP) Principles
+- **Encapsulation**:
+  - Secure state management with private fields and validated getters/setters across core entity models (`User`, `Passenger`, `Driver`, `Vehicle`, `Booking`, `Payment`).
+- **Inheritance**:
+  - A comprehensive user hierarchy starting from a base `User` superclass, extended by specialized child classes such as `Passenger`, `Driver`, and `Admin`.
+  - Vehicle hierarchy extending from a base `Vehicle` class into `Car`, `Van`, and `Bike`.
+- **Polymorphism**:
+  - Method overriding for dynamic fare calculation algorithms based on vehicle category and ride distance.
+  - Polymorphic notification and payment processing mechanisms.
+- **Abstraction**:
+  - Abstract classes and interfaces (e.g., `BookingService`, `PaymentGateway`, `DataRepository`) to decouple business logic from underlying data storage mechanisms.
+
+### 2. Data Management & CRUD Operations
+- Robust implementation supporting either **File Handling** (`.txt` / `.dat` file streams) or a relational **MySQL Database**.
+- At least three core CRUD modules:
+  - 🚗 **Ride / Booking Management**: Create ride requests, view active rides, update trip status (Pending, Confirmed, Completed, Cancelled), and cancel bookings.
+  - 👤 **User & Driver Profiles**: Register accounts, view profile details, update contact/vehicle information, and deactivate profiles.
+  - 💳 **Payment & Transaction Logs**: Generate billing statements, view transaction history, process refunds/adjustments, and remove expired logs.
+
+### 3. User-Friendly Interface (UI/UX)
+- Responsive, clean, and accessible UI crafted with HTML5, modern CSS3 (Bootstrap / custom styling), and JavaScript.
+- Dynamic input validation, responsive fare preview, interactive booking forms, and intuitive driver availability toggles.
+
+### 4. Version Control & Collaborative Workflow
+- Structured Git version control using clear commit conventions and feature-based branch management hosted on GitHub.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
 |---|---|
-| **Backend** | Java (JDK 21), Spring Boot / Java Servlets & JSP |
-| **Frontend** | HTML5, CSS3 (Bootstrap / Modern CSS), JavaScript |
-| **Data Storage** | File Handling (`.txt` / `.json`) or MySQL Database |
+| **Backend** | Java (JDK 21), Java Servlets & JSP / Spring Boot |
+| **Frontend** | HTML5, CSS3 (Bootstrap 5 / Modern CSS), JavaScript (ES6+) |
+| **Data Persistence** | Java File I/O (`.txt` / serialization) or MySQL Database |
+| **Build & Tooling** | Apache Maven / Gradle |
 | **Version Control** | Git & GitHub |
-| **Build Tool** | Maven / Gradle |
 
 ---
 
-## 📂 Project Architecture (Planned)
+## 📂 System Architecture
 
 ```text
 Taxi-booking-Service/
@@ -56,16 +62,17 @@ Taxi-booking-Service/
 │   ├── main/
 │   │   ├── java/com/taxibooking/
 │   │   │   ├── model/         # User, Passenger, Driver, Vehicle, Booking, Payment
-│   │   │   ├── service/       # Business logic & OOP Abstractions / Interfaces
-│   │   │   ├── dao/           # Data Access (File Handler / Database Repository)
-│   │   │   └── controller/    # Web endpoints / Servlets
+│   │   │   ├── service/       # Business logic & OOP Interfaces
+│   │   │   ├── dao/           # Data Access Layer (File Handler / DB Repositories)
+│   │   │   ├── util/          # Helpers, file paths, validators
+│   │   │   └── controller/    # Servlets / Web controllers
 │   │   └── webapp/ or resources/
-│   │       ├── css/           # Styling sheets
-│   │       ├── js/            # Client-side validation & interactivity
-│   │       └── views/         # HTML / JSP templates
-├── data/                      # Data storage files (.txt) if using File Handling
-├── .gitignore
-└── README.md
+│   │       ├── css/           # Modern stylesheets
+│   │       ├── js/            # Client-side validation & scripts
+│   │       └── views/         # JSP / HTML template pages
+├── data/                      # Data storage files (.txt) for File Handling
+├── .gitignore                 # Standard Java & IDE gitignore
+└── README.md                  # Project documentation
 ```
 
 ---
@@ -73,22 +80,24 @@ Taxi-booking-Service/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Java Development Kit (JDK 21+)**
+- **Java Development Kit (JDK 21 or higher)**
 - **Git**
-- Web Browser (Chrome, Firefox, Edge)
+- Modern Web Browser (Chrome, Firefox, Edge, Safari)
 
-### Setup & Run
+### Installation & Local Setup
 ```bash
-# Clone the repository
-git clone https://github.com/thisarana-s/Taxi-booking-Service.git
+# 1. Clone the repository
+git clone https://github.com/IT26100179/Taxi-booking-Service.git
 
-# Navigate to project folder
+# 2. Navigate to the project directory
 cd Taxi-booking-Service
 ```
 
 ---
 
-## 👥 Contributors & Course Info
+## 👥 Course & Student Information
+
 - **Course**: SE1020 - Object Oriented Programming
-- **Weightage**: 10% Continuous Assessment
-- **Author / Developer**: thisarana-s
+- **Assessment Weightage**: 10% Continuous Assessment
+- **Student ID / Author**: IT26100179
+- **Institution**: Sri Lanka Institute of Information Technology (SLIIT)
