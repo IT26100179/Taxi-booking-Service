@@ -95,9 +95,23 @@ cd Taxi-booking-Service
 
 ---
 
-## 👥 Course & Student Information
+## 👥 Project Team & Course Information
 
-- **Course**: SE1020 - Object Oriented Programming
-- **Assessment Weightage**: 10% Continuous Assessment
-- **Student ID / Author**: IT26100179
 - **Institution**: Sri Lanka Institute of Information Technology (SLIIT)
+- **Course**: SE1020 - Object Oriented Programming
+- **Academic Year / Semester**: Year 1 Semester 2 (Y1S2)
+- **Batch / Class**: `Y1S2.WE.IT.0101`
+- **Group ID**: `WE02`
+- **Assessment Weightage**: 10% Continuous Assessment
+
+### Group Members (Group WE02)
+
+| # | Student ID | Student Name | Group / Batch | Role / Contribution Area |
+|---|---|---|---|---|
+| 1 | **IT26100179** | **Gunasena G. T. S.** | `Y1S2.WE.IT.0101` (WE02) | Project Lead / Core Architecture |
+| 2 | **IT26100432** | **Rajapaksha P. L.** | `Y1S2.WE.IT.0101` (WE02) | Group Member |
+| 3 | **IT26101197** | **Silva W. O. V.** | `Y1S2.WE.IT.0101` (WE02) | Group Member |
+| 4 | **IT26100311** | **Gamalath D. T.** | `Y1S2.WE.IT.0101` (WE02) | Group Member |
+| 5 | **IT26100472** | **Sivathuwarani T.** | `Y1S2.WE.IT.0101` (WE02) | Group Member |
+| 6 | **IT26100552** | **Ahamad A. A.** | `Y1S2.WE.IT.0101` (WE02) | Group Member |
+
