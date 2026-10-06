@@ -1,0 +1,3 @@
+DRV-201|Sunil Jayawardena|sunil@taxi.lk|0777112233|drv123|B-1234567|Car|AVAILABLE|4.8
+DRV-202|Anura Bandara|anura@taxi.lk|0712334455|drv123|B-9876543|Van|AVAILABLE|4.9
+DRV-203|Roshan Wickramasinghe|roshan@taxi.lk|0765556677|drv123|B-5566778|Bike|BUSY|4.6

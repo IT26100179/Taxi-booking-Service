@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Admin Dashboard')}"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="fa-solid fa-gauge-high text-warning me-2"></i> Central Management Dashboard</h2>
+            <p class="text-muted mb-0">Live inspection of all 6 project components reading from <code>data/*.txt</code> files.</p>
+        </div>
+        <a th:href="@{/}" class="btn btn-outline-custom">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Home
+        </a>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4 gap-2" id="adminTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active btn-sm" id="passengers-tab" data-bs-toggle="pill" data-bs-target="#passengers" type="button">
+                <i class="fa-solid fa-users me-1"></i> Passengers (<span th:text="${passengers.size()}">0</span>)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn-sm" id="drivers-tab" data-bs-toggle="pill" data-bs-target="#drivers" type="button">
+                <i class="fa-solid fa-id-card me-1"></i> Drivers (<span th:text="${drivers.size()}">0</span>)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn-sm" id="vehicles-tab" data-bs-toggle="pill" data-bs-target="#vehicles" type="button">
+                <i class="fa-solid fa-taxi me-1"></i> Vehicles (<span th:text="${vehicles.size()}">0</span>)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn-sm" id="bookings-tab" data-bs-toggle="pill" data-bs-target="#bookings" type="button">
+                <i class="fa-solid fa-route me-1"></i> Bookings (<span th:text="${bookings.size()}">0</span>)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn-sm" id="payments-tab" data-bs-toggle="pill" data-bs-target="#payments" type="button">
+                <i class="fa-solid fa-credit-card me-1"></i> Payments (<span th:text="${payments.size()}">0</span>)
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn-sm" id="reviews-tab" data-bs-toggle="pill" data-bs-target="#reviews" type="button">
+                <i class="fa-solid fa-star me-1"></i> Reviews (<span th:text="${reviews.size()}">0</span>)
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="adminTabsContent">
+        <!-- 1. Passengers Tab -->
+        <div class="tab-pane fade show active" id="passengers" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 1: Passenger Registry (<code>passengers.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Passenger ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Registered Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${passengers}">
+                                <td><span class="badge bg-secondary" th:text="${p.id}">PASS-101</span></td>
+                                <td class="fw-bold text-white" th:text="${p.name}">Kamal Perera</td>
+                                <td th:text="${p.email}">kamal@gmail.com</td>
+                                <td th:text="${p.phone}">0771234567</td>
+                                <td th:text="${p.address}">Colombo 03</td>
+                                <td th:text="${p.registeredDate}">2026-09-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Drivers Tab -->
+        <div class="tab-pane fade" id="drivers" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 2: Driver Management (<code>drivers.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Driver ID</th>
+                                <th>Name</th>
+                                <th>License #</th>
+                                <th>Assigned Vehicle</th>
+                                <th>Status</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="d : ${drivers}">
+                                <td><span class="badge bg-secondary" th:text="${d.id}">DRV-201</span></td>
+                                <td class="fw-bold text-white" th:text="${d.name}">Sunil Jayawardena</td>
+                                <td th:text="${d.licenseNumber}">B-1234567</td>
+                                <td><span class="fleet-badge" th:text="${d.vehicleType}">Car</span></td>
+                                <td><span class="badge bg-success" th:text="${d.status}">AVAILABLE</span></td>
+                                <td class="star-rating">⭐ <span th:text="${d.rating}">4.8</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Vehicles Tab -->
+        <div class="tab-pane fade" id="vehicles" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 3: Vehicle & Fleet Management (<code>vehicles.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Vehicle ID</th>
+                                <th>Plate #</th>
+                                <th>Model</th>
+                                <th>Type</th>
+                                <th>Capacity</th>
+                                <th>Rate/Km</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="v : ${vehicles}">
+                                <td><span class="badge bg-secondary" th:text="${v.vehicleId}">VEH-301</span></td>
+                                <td class="fw-bold text-white" th:text="${v.plateNumber}">WP-CAB-1234</td>
+                                <td th:text="${v.model}">Toyota Prius</td>
+                                <td><span class="fleet-badge" th:text="${v.type}">Car</span></td>
+                                <td th:text="${v.capacity} + ' Seats'">4 Seats</td>
+                                <td class="text-warning fw-bold">Rs. <span th:text="${v.ratePerKm}">120.0</span></td>
+                                <td><span class="badge" th:classappend="${v.available} ? 'bg-success' : 'bg-danger'" th:text="${v.available ? 'AVAILABLE' : 'BUSY'}">AVAILABLE</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Bookings Tab -->
+        <div class="tab-pane fade" id="bookings" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 4: Ride Booking & Trips (<code>bookings.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Passenger</th>
+                                <th>Driver</th>
+                                <th>Route</th>
+                                <th>Distance</th>
+                                <th>Fare</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="b : ${bookings}">
+                                <td><span class="badge bg-secondary" th:text="${b.bookingId}">BKG-401</span></td>
+                                <td th:text="${b.passengerId}">PASS-101</td>
+                                <td th:text="${b.driverId}">DRV-201</td>
+                                <td><span th:text="${b.pickupLocation}">Fort</span> &rarr; <span th:text="${b.dropLocation}">SLIIT</span></td>
+                                <td th:text="${b.distanceKm} + ' km'">18.5 km</td>
+                                <td class="text-warning fw-bold">Rs. <span th:text="${b.fare}">2220.0</span></td>
+                                <td><span class="badge bg-primary" th:text="${b.status}">COMPLETED</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Payments Tab -->
+        <div class="tab-pane fade" id="payments" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 5: Fare & Payments (<code>payments.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Booking ID</th>
+                                <th>Passenger</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pay : ${payments}">
+                                <td><span class="badge bg-secondary" th:text="${pay.paymentId}">PAY-501</span></td>
+                                <td th:text="${pay.bookingId}">BKG-401</td>
+                                <td th:text="${pay.passengerId}">PASS-101</td>
+                                <td class="text-warning fw-bold">Rs. <span th:text="${pay.amount}">2220.0</span></td>
+                                <td><span class="badge bg-dark border" th:text="${pay.paymentMethod}">CARD</span></td>
+                                <td><span class="badge bg-success" th:text="${pay.paymentStatus}">PAID</span></td>
+                                <td class="small text-muted" th:text="${pay.paidAt}">2026-10-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Reviews Tab -->
+        <div class="tab-pane fade" id="reviews" role="tabpanel">
+            <div class="card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-white mb-0">Component 6: Ratings & Reviews (<code>reviews.txt</code>)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Review ID</th>
+                                <th>Booking</th>
+                                <th>Driver</th>
+                                <th>Passenger</th>
+                                <th>Rating</th>
+                                <th>Feedback</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="rev : ${reviews}">
+                                <td><span class="badge bg-secondary" th:text="${rev.reviewId}">REV-601</span></td>
+                                <td th:text="${rev.bookingId}">BKG-401</td>
+                                <td th:text="${rev.driverId}">DRV-201</td>
+                                <td th:text="${rev.passengerId}">PASS-101</td>
+                                <td class="star-rating"><span th:text="${'⭐ ' + rev.rating + ' / 5'}">⭐ 5/5</span></td>
+                                <td class="text-white" th:text="${rev.feedback}">Great service!</td>
+                                <td class="small text-muted" th:text="${rev.reviewDate}">2026-10-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<!-- Scripts -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
