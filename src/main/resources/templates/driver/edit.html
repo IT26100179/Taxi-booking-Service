@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Edit Driver Profile')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-5" style="max-width: 760px;">
+    <div class="mb-4">
+        <h2 class="fw-bold text-white mb-1"><i class="fa-solid fa-user-pen text-warning me-2"></i> Edit Driver Profile</h2>
+        <p class="text-light mb-0">
+            <span th:text="${driver.id}">DRV-201</span> &middot;
+            <span th:text="${driver.employmentType}">FULLTIME</span> &middot; Status:
+            <strong th:text="${driver.availabilityStatus}">AVAILABLE</strong>
+        </p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form method="post" th:action="@{/drivers/{id}/edit(id=${driver.id})}" class="card-custom p-4">
+        <h5 class="fw-bold text-white mb-3">Personal and contact information</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <label class="form-label text-light small">Full name</label>
+                <input type="text" name="name" th:value="${driver.name}" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-light small">Email</label>
+                <input type="email" name="email" th:value="${driver.email}" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-light small">Phone (10 digits)</label>
+                <input type="text" name="phone" th:value="${driver.phone}" class="form-control"
+                       pattern="\d{10}" title="Enter exactly 10 digits" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-light small">NIC</label>
+                <input type="text" name="nic" th:value="${driver.nic}" class="form-control" required>
+            </div>
+        </div>
+
+        <h5 class="fw-bold text-white mb-3">Licence and vehicle</h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label text-light small">Licence number</label>
+                <input type="text" name="licence" th:value="${driver.licenseNumber}" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label text-light small">Assigned vehicle</label>
+                <select name="vehicleId" class="form-select" required>
+                    <option th:each="v : ${vehicles}" th:value="${v.key}"
+                            th:text="${v.key + ' (' + v.value + ')'}"
+                            th:selected="${v.key == driver.vehicleId}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-warning-custom px-4">Save changes</button>
+            <a th:href="@{/drivers}" class="btn btn-outline-custom">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
