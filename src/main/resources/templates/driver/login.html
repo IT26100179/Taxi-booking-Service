@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Driver Login')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-5" style="max-width: 460px;">
+    <div class="mb-4 text-center">
+        <h2 class="fw-bold text-white mb-1"><i class="fa-solid fa-id-card text-warning me-2"></i> Driver Login</h2>
+        <p class="text-light mb-0">Sign in to manage your availability</p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form method="post" th:action="@{/drivers/login}" class="card-custom p-4">
+        <div class="mb-3">
+            <label class="form-label text-light small">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-light small">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-warning-custom w-100">Login</button>
+    </form>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
