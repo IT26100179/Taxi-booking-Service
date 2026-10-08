@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Driver Availability')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1"><i class="fa-solid fa-id-card text-warning me-2"></i> Driver Management</h2>
+            <p class="text-light mb-0">Availability board, reading from <code>data/drivers.txt</code></p>
+        </div>
+        <a th:href="@{/drivers/register}" class="btn btn-warning-custom">
+            <i class="fa-solid fa-user-plus me-1"></i> Register Driver
+        </a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- Filters -->
+    <form method="get" th:action="@{/drivers}" class="card-custom p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label text-light small">Search by name</label>
+                <input type="text" name="q" th:value="${q}" class="form-control" placeholder="e.g. Sunil">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-light small">Availability</label>
+                <select name="status" class="form-select">
+                    <option value="">All</option>
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
+                            th:selected="${s == selectedStatus}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-light small">Vehicle type</label>
+                <select name="vehicleType" class="form-select">
+                    <option value="">All</option>
+                    <option th:each="t : ${vehicleTypes}" th:value="${t}" th:text="${t}"
+                            th:selected="${t == selectedType}"></option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-outline-custom">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Driver table -->
+    <div class="card-custom p-4">
+        <div class="table-responsive">
+            <table class="table table-custom align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Licence</th>
+                    <th>Vehicle</th>
+                    <th>Employment</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${drivers}">
+                    <td><span class="badge bg-secondary" th:text="${d.id}">DRV-201</span></td>
+                    <td class="fw-bold text-white" th:text="${d.name}">Name</td>
+                    <td class="text-white" th:text="${d.licenseNumber}">B-123</td>
+                    <td>
+                        <span class="fleet-badge" th:text="${d.vehicleType}">Car</span>
+                        <span class="small text-muted" th:text="${d.vehicleId}"></span>
+                    </td>
+                    <td class="text-white" th:text="${d.employmentType}">FULLTIME</td>
+                    <td class="star-rating">⭐ <span class="text-white" th:text="${d.rating}">4.8</span></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${d.availabilityStatus == 'AVAILABLE'} ? 'bg-success' : (${d.availabilityStatus == 'ON_TRIP'} ? 'bg-primary' : (${d.availabilityStatus == 'SUSPENDED'} ? 'bg-danger' : 'bg-secondary'))"
+                              th:text="${d.availabilityStatus}">AVAILABLE</span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <a th:href="@{/drivers/{id}/edit(id=${d.id})}" class="btn btn-sm btn-outline-custom">Edit</a>
+
+                            <form th:if="${d.availabilityStatus != 'SUSPENDED'}" method="post"
+                                  th:action="@{/drivers/{id}/suspend(id=${d.id})}">
+                                <button type="submit" class="btn btn-sm btn-outline-warning">Suspend</button>
+                            </form>
+                            <form th:if="${d.availabilityStatus == 'SUSPENDED'}" method="post"
+                                  th:action="@{/drivers/{id}/reinstate(id=${d.id})}">
+                                <button type="submit" class="btn btn-sm btn-outline-success">Reinstate</button>
+                            </form>
+
+                            <form method="post" th:action="@{/drivers/{id}/delete(id=${d.id})}"
+                                  onsubmit="return confirm('Permanently delete this driver?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(drivers)}">
+                    <td colspan="8" class="text-center text-muted py-4">No drivers found</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
