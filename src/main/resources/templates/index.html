@@ -18,14 +18,14 @@
                     Next-Gen <span>Taxi & Cab</span> Service Platform
                 </h1>
                 <p class="hero-subtitle mb-4">
-                    A comprehensive multi-tier web platform engineered with <strong>Java 21, Spring Boot, and robust File Handling (.txt)</strong>. Designed to deliver passenger ride requests, automated fleet assignment, and polymorphic fare calculations.
+                    A comprehensive multi-tier web platform engineered with <strong>Java 21, Spring Boot, and robust File Handling (.txt)</strong>. Designed to deliver passenger ride requests, automated fleet assignment, and transparent ride management.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="#calculator" class="btn btn-warning-custom px-4 py-2">
-                        <i class="fa-solid fa-calculator me-1"></i> Try Fare Estimator
+                    <a href="#fleet" class="btn btn-warning-custom px-4 py-2">
+                        <i class="fa-solid fa-car-side me-1"></i> Explore Fleet
                     </a>
-                    <a th:href="@{/admin}" class="btn btn-outline-custom px-4 py-2">
-                        <i class="fa-solid fa-database me-1"></i> View File Records (Admin)
+                    <a th:href="@{/drivers}" class="btn btn-outline-custom px-4 py-2">
+                        <i class="fa-solid fa-id-card me-1"></i> View Drivers
                     </a>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fa-solid fa-id-card"></i></div>
-                            <div class="stat-value" th:text="${driverCount}">3</div>
+                            <div class="stat-value" th:text="${driverCount}">4</div>
                             <div class="stat-label">Active Drivers</div>
                         </div>
                     </div>
@@ -66,69 +66,6 @@
         </div>
     </div>
 </header>
-
-<!-- Interactive Fare Estimator Section (Polymorphism Showcase) -->
-<section id="calculator" class="py-5 bg-dark-custom">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="estimator-card">
-                    <div class="text-center mb-4">
-                        <span class="badge bg-warning text-dark mb-2 fw-bold">Polymorphic Fare Engine</span>
-                        <h2 class="fw-bold text-white">Live Ride Fare Estimator</h2>
-                        <p class="text-muted small">Demonstrates OOP Polymorphism where each vehicle category implements its own calculation algorithm.</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label text-secondary fw-semibold small">SELECT VEHICLE CATEGORY:</label>
-                        <div class="row g-2">
-                            <div class="col-4">
-                                <div class="vehicle-selector-btn active" data-type="Car">
-                                    <i class="fa-solid fa-car fs-4 d-block mb-1"></i>
-                                    <strong>Car</strong>
-                                    <div class="small text-muted">Rs. 120/km</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="vehicle-selector-btn" data-type="Van">
-                                    <i class="fa-solid fa-van-shuttle fs-4 d-block mb-1"></i>
-                                    <strong>Van</strong>
-                                    <div class="small text-muted">Rs. 180/km</div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="vehicle-selector-btn" data-type="Bike">
-                                    <i class="fa-solid fa-motorcycle fs-4 d-block mb-1"></i>
-                                    <strong>Bike</strong>
-                                    <div class="small text-muted">Rs. 60/km</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label for="distanceSlider" class="form-label text-secondary fw-semibold small mb-0">ESTIMATED TRIP DISTANCE:</label>
-                            <span id="distanceDisplay" class="badge bg-secondary fs-6">10 km</span>
-                        </div>
-                        <input type="range" class="form-range" id="distanceSlider" min="1" max="100" value="10" step="1">
-                        <div class="d-flex justify-content-between text-muted small">
-                            <span>1 km</span>
-                            <span>50 km</span>
-                            <span>100 km</span>
-                        </div>
-                    </div>
-
-                    <div class="fare-display-box">
-                        <div class="small text-muted text-uppercase fw-bold mb-1">Estimated Total Fare</div>
-                        <div id="estimatedFare" class="fare-amount">Rs. 1350.00</div>
-                        <div class="small text-secondary mt-1">Includes base booking flag fee + per-km distance rate</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Fleet Catalog Section (Abstraction & Inheritance) -->
 <section id="fleet" class="py-5">
@@ -162,84 +99,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Team & Project Components Matrix -->
-<section id="team" class="py-5 bg-dark-custom">
-    <div class="container">
-        <div class="text-center mb-5">
-            <span class="badge bg-warning text-dark mb-2 fw-bold">Academic Group Allocation</span>
-            <h2 class="fw-bold text-white">Project Components & Team Members</h2>
-            <p class="text-muted">SLIIT SE1020 Object Oriented Programming Coursework • Group ID: <strong>WE02</strong></p>
-        </div>
-
-        <div class="card-custom overflow-hidden">
-            <div class="table-responsive">
-                <table class="table table-custom mb-0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Student ID</th>
-                            <th>Student Name</th>
-                            <th>Assigned Component</th>
-                            <th>Data File (.txt)</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="fw-bold text-warning">1</td>
-                            <td><span class="badge bg-dark border border-secondary text-warning">IT26100179</span></td>
-                            <td class="fw-bold text-white">Gunasena G. T. S.</td>
-                            <td><i class="fa-solid fa-diagram-project text-info me-1"></i> Project Architecture & Repository Setup</td>
-                            <td><code>data/*.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-warning">2</td>
-                            <td><span class="badge bg-dark border border-secondary text-light">IT26100432</span></td>
-                            <td class="fw-bold text-white">Rajapaksha P. L.</td>
-                            <td><i class="fa-solid fa-user text-warning me-1"></i> Passenger Management</td>
-                            <td><code>data/passengers.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-warning">3</td>
-                            <td><span class="badge bg-dark border border-secondary text-light">IT26101197</span></td>
-                            <td class="fw-bold text-white">Silva W. O. V.</td>
-                            <td><i class="fa-solid fa-id-card text-success me-1"></i> Driver Management</td>
-                            <td><code>data/drivers.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-warning">4</td>
-                            <td><span class="badge bg-dark border border-secondary text-light">IT26100311</span></td>
-                            <td class="fw-bold text-white">Gamalath D. T.</td>
-                            <td><i class="fa-solid fa-car text-primary me-1"></i> Vehicle & Fleet Management</td>
-                            <td><code>data/vehicles.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-warning">5</td>
-                            <td><span class="badge bg-dark border border-secondary text-light">IT26100472</span></td>
-                            <td class="fw-bold text-white">Sivathuwarani T.</td>
-                            <td><i class="fa-solid fa-route text-danger me-1"></i> Ride Booking & Trip Management</td>
-                            <td><code>data/bookings.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-warning">6</td>
-                            <td><span class="badge bg-dark border border-secondary text-light">IT26100552</span></td>
-                            <td class="fw-bold text-white">Ahamad A. A.</td>
-                            <td><i class="fa-solid fa-money-bill-wave text-warning me-1"></i> Fare Calculation & Payments</td>
-                            <td><code>data/payments.txt</code></td>
-                            <td>Group Member</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
