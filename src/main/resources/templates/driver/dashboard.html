@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Driver Dashboard')}"></head>
+<body>
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container py-5" style="max-width: 860px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1">
+                <i class="fa-solid fa-gauge-high text-warning me-2"></i>
+                Welcome, <span th:text="${driver.name}">Driver</span>
+            </h2>
+            <p class="text-light mb-0">
+                <span th:text="${driver.id}">DRV-201</span> &middot;
+                <span th:text="${driver.employmentType}">FULLTIME</span>
+            </p>
+        </div>
+        <a th:href="@{/drivers/logout}" class="btn btn-outline-custom">
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+        </a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- Availability status + toggle -->
+    <div class="card-custom p-4 mb-4">
+        <h5 class="fw-bold text-white mb-3">Availability</h5>
+        <p class="mb-3 text-light">Current status:
+            <span class="badge fs-6"
+                  th:classappend="${driver.availabilityStatus == 'AVAILABLE'} ? 'bg-success' : (${driver.availabilityStatus == 'ON_TRIP'} ? 'bg-primary' : (${driver.availabilityStatus == 'SUSPENDED'} ? 'bg-danger' : 'bg-secondary'))"
+                  th:text="${driver.availabilityStatus}">OFFLINE</span>
+        </p>
+
+        <form method="post" th:action="@{/drivers/status}" class="d-flex gap-2 flex-wrap"
+              th:if="${driver.availabilityStatus != 'SUSPENDED'}">
+            <th:block th:each="s : ${driver.allowedTransitions}">
+                <button type="submit" name="status" th:value="${s}" th:if="${s != 'SUSPENDED'}"
+                        class="btn btn-warning-custom"
+                        th:text="${s == 'AVAILABLE'} ? 'Go Available' : (${s == 'ON_TRIP'} ? 'Start Trip' : 'Go Offline')">
+                    Switch
+                </button>
+            </th:block>
+        </form>
+
+        <div th:if="${driver.availabilityStatus == 'SUSPENDED'}" class="text-danger">
+            Your account is suspended. Please contact an administrator.
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Assigned vehicle -->
+        <div class="col-md-6">
+            <div class="card-custom p-4 h-100">
+                <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-taxi text-warning me-2"></i> Assigned vehicle</h5>
+                <p class="mb-1 text-light">Vehicle ID:
+                    <strong class="text-white" th:text="${#strings.isEmpty(driver.vehicleId)} ? 'Not assigned' : ${driver.vehicleId}">V001</strong></p>
+                <p class="mb-1 text-light">Type: <span class="fleet-badge" th:text="${driver.vehicleType}">Car</span></p>
+                <p class="mb-1 text-light">Licence: <strong class="text-white" th:text="${driver.licenseNumber}">B-123</strong></p>
+                <p class="mb-3 text-light">Rating: ⭐ <strong class="text-white" th:text="${driver.rating}">4.8</strong></p>
+                <a th:href="@{/drivers/{id}/edit(id=${driver.id})}" class="btn btn-sm btn-outline-custom">Edit my profile</a>
+            </div>
+        </div>
+
+        <!-- Today's trips -->
+        <div class="col-md-6">
+            <div class="card-custom p-4 h-100">
+                <h5 class="fw-bold text-white mb-3"><i class="fa-solid fa-route text-warning me-2"></i> Today's trips</h5>
+                <p th:if="${#lists.isEmpty(trips)}" class="text-light mb-0">No trips today.</p>
+                <ul th:unless="${#lists.isEmpty(trips)}" class="text-light mb-0">
+                    <li th:each="t : ${trips}" th:text="${t}">Trip</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
