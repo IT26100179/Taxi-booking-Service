@@ -57,16 +57,6 @@ public class UserRepository {
     }
 
     public String nextId() {
-        int max = findAll().stream()
-                .mapToInt(u -> {
-                    try {
-                        return Integer.parseInt(u.getId().substring(2));
-                    } catch (Exception e) {
-                        return 1000;
-                    }
-                })
-                .max()
-                .orElse(1000);
-        return "u-" + (max + 1);
+        return "u-" + java.util.UUID.randomUUID();
     }
 }

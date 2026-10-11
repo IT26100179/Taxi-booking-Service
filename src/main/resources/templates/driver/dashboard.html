@@ -330,6 +330,40 @@
          th:data-drop-lat="${dropPlace.lat}"
          th:data-drop-lng="${dropPlace.lng}"
          style="display: none;"></div>
+
+    <section class="card card-custom border-danger p-4 mt-4">
+        <h4 class="text-danger">Delete My Account</h4>
+
+        <p class="text-muted">
+            Permanently delete your driver account, profile, and vehicle
+            details. Past ride records will remain for ride history.
+            Go offline and finish any outstanding ride first.
+        </p>
+
+        <form th:action="@{/driver/account/delete}"
+              method="post"
+              onsubmit="return confirm(
+              'Permanently delete your driver account? This cannot be undone.'
+          );">
+
+            <div class="mb-3">
+                <label for="deleteAccountPassword" class="form-label">
+                    Current password
+                </label>
+
+                <input type="password"
+                       id="deleteAccountPassword"
+                       name="currentPassword"
+                       class="form-control"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-danger">
+                Delete My Account
+            </button>
+        </form>
+    </section>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
