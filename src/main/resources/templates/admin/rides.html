@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Monitor Rides')}">
+    <title>Monitor Rides - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <div class="card card-custom p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Ride Monitoring</h3>
+                <p class="text-muted small mb-0">Track all passenger trip bookings, live offers, and completions</p>
+            </div>
+
+            <!-- Filter Status Dropdown / Pills -->
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Status:</span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-dark btn-sm dropdown-toggle rounded-pill px-3" type="button" data-bs-toggle="dropdown">
+                        <span th:text="${currentFilter}">ALL</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=ALL}">All Statuses</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=REQUESTED}">REQUESTED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=OFFERED}">OFFERED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=ACCEPTED}">ACCEPTED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=ARRIVED}">ARRIVED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=ONTRIP}">ONTRIP</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=COMPLETED}">COMPLETED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=CANCELLED}">CANCELLED</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/rides?status=NODRIVER}">NODRIVER</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${rides == null or rides.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+            <h5 class="fw-bold text-muted">No rides found</h5>
+            <p class="text-muted small">No rides recorded for the selected filter.</p>
+        </div>
+
+        <div th:if="${rides != null and !rides.isEmpty()}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Passenger</th>
+                        <th>Driver</th>
+                        <th>Route</th>
+                        <th>Type</th>
+                        <th>Fare</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                        <th>Requested</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${rides}">
+                        <td class="fw-semibold font-monospace" th:text="${r.id}">r-1</td>
+                        <td>
+                            <div class="fw-semibold text-dark" th:text="${userNames.containsKey(r.passengerId) ? userNames.get(r.passengerId) : r.passengerId}">Passenger</div>
+                            <span class="text-muted font-monospace small" th:text="${r.passengerId}">u-1002</span>
+                        </td>
+                        <td>
+                            <div th:if="${r.driverId != null and !r.driverId.isBlank()}">
+                                <span class="fw-semibold text-dark" th:text="${userNames.containsKey(r.driverId) ? userNames.get(r.driverId) : r.driverId}">Driver</span>
+                                <div class="text-muted font-monospace small" th:text="${r.driverId}">u-1003</div>
+                            </div>
+                            <span th:if="${r.driverId == null or r.driverId.isBlank()}" class="text-muted small">
+                                <span th:if="${r.offeredTo != null and !r.offeredTo.isBlank()}" th:text="'Offered to: ' + ${r.offeredTo}">Offered</span>
+                                <span th:if="${r.offeredTo == null or r.offeredTo.isBlank()}">-</span>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="text-dark" th:text="${places.containsKey(r.pickupPlace) ? places.get(r.pickupPlace).name : r.pickupPlace} + ' → ' + ${places.containsKey(r.dropPlace) ? places.get(r.dropPlace).name : r.dropPlace}">Fort → Bamba</div>
+                            <span class="text-muted small" th:text="${r.distanceKm} + ' km'">3.2 km</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border" th:text="${typeNames.get(r.typeId)}">TUK</span>
+                        </td>
+                        <td>
+                            <strong class="text-success" th:text="'Rs ' + (${r.fareFinal > 0 ? r.fareFinal : r.fareEstimate})">Rs 290</strong>
+                            <div class="text-muted small" th:text="${r.paymentStatus}">PAID</div>
+                        </td>
+                        <td>
+                            <span th:class="'badge-status badge-status-' + ${r.status}" th:text="${r.status}">COMPLETED</span>
+                        </td>
+                        <td>
+                            <span th:if="${r.rating > 0}" class="text-warning fw-semibold">
+                                <i class="bi bi-star-fill"></i> <span th:text="${r.rating}"></span>
+                            </span>
+                            <span th:if="${r.rating == 0}" class="text-muted">-</span>
+                        </td>
+                        <td class="small text-muted" th:text="${r.requestedAt != null ? #temporals.format(r.requestedAt, 'MM-dd HH:mm') : '-'}">
+                            10-10 10:00
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

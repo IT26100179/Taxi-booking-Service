@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Admin Dashboard')}">
+    <title>Admin Dashboard - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <h3 class="fw-bold mb-0">Administrative Overview</h3>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                    <i class="bi bi-circle-fill text-success me-1" style="font-size: 0.5rem;"></i> Live Auto-Sync
+                </span>
+            </div>
+            <p class="text-muted small mb-0 mt-1">Platform metrics, financial performance, and system activity</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/drivers?status=PENDING}" class="btn btn-warning btn-sm rounded-pill px-3 fw-semibold">
+                <i class="bi bi-person-exclamation me-1"></i> <span id="statPendingDrivers" th:text="${pendingDrivers}">0</span> Pending Drivers
+            </a>
+            <button type="button" id="manualSyncBtn" onclick="syncAdminNow()" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="bi bi-arrow-clockwise me-1" id="syncSpinner"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Metric Cards Grid -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-stat">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-semibold">Total Revenue</div>
+                        <h4 id="statTotalRevenue" class="fw-bold mb-0 text-success" th:text="'Rs ' + ${totalRevenue}">Rs 0</h4>
+                        <div class="text-muted small mt-1">From completed trips</div>
+                    </div>
+                    <div class="stat-icon bg-success-subtle text-success">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-stat">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-semibold">Platform Fee (15%)</div>
+                        <h4 id="statPlatformCommission" class="fw-bold mb-0 text-primary" th:text="'Rs ' + ${platformCommission}">Rs 0</h4>
+                        <div class="text-muted small mt-1">Gamana net revenue</div>
+                    </div>
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-pie-chart-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-stat">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-semibold">Completed Rides</div>
+                        <h4 class="fw-bold mb-0 text-dark">
+                            <span id="statCompletedCount" th:text="${completedCount}">0</span>
+                            <span class="fs-6 text-muted fw-normal">/ <span id="statTotalRides" th:text="${totalRides}">0</span> total</span>
+                        </h4>
+                        <div class="text-muted small mt-1">Completed bookings</div>
+                    </div>
+                    <div class="stat-icon bg-info-subtle text-info">
+                        <i class="bi bi-taxi-front"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card card-stat">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small fw-semibold">Online Drivers</div>
+                        <h4 id="statOnlineDrivers" class="fw-bold mb-0 text-warning" th:text="${onlineDrivers}">0</h4>
+                        <div class="text-muted small mt-1">Currently active &amp; ready</div>
+                    </div>
+                    <div class="stat-icon bg-warning-subtle text-warning">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Shortcuts -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <a th:href="@{/admin/drivers}" class="card card-custom p-3 text-decoration-none text-dark h-100 d-flex flex-row align-items-center gap-3">
+                <div class="badge bg-primary-subtle text-primary p-3 rounded-circle fs-5"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Manage Drivers</h6>
+                    <small class="text-muted">Approve &amp; suspend</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a th:href="@{/admin/rides}" class="card card-custom p-3 text-decoration-none text-dark h-100 d-flex flex-row align-items-center gap-3">
+                <div class="badge bg-success-subtle text-success p-3 rounded-circle fs-5"><i class="bi bi-card-list"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Monitor Rides</h6>
+                    <small class="text-muted">Status &amp; logs</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a th:href="@{/admin/rates}" class="card card-custom p-3 text-decoration-none text-dark h-100 d-flex flex-row align-items-center gap-3">
+                <div class="badge bg-warning-subtle text-warning p-3 rounded-circle fs-5"><i class="bi bi-sliders"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Fare Rates</h6>
+                    <small class="text-muted">Base &amp; per km</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a th:href="@{/admin/promos}" class="card card-custom p-3 text-decoration-none text-dark h-100 d-flex flex-row align-items-center gap-3">
+                <div class="badge bg-danger-subtle text-danger p-3 rounded-circle fs-5"><i class="bi bi-tag-fill"></i></div>
+                <div>
+                    <h6 class="fw-bold mb-0">Promo Codes</h6>
+                    <small class="text-muted">Discounts &amp; limits</small>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Rides -->
+        <div class="col-lg-7">
+            <div class="card card-custom p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Recent Rides</h5>
+                    <a th:href="@{/admin/rides}" class="small text-decoration-none">View all &rarr;</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted">
+                            <tr>
+                                <th>ID</th>
+                                <th>Route</th>
+                                <th>Fare</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentRidesTableBody">
+                            <tr th:if="${recentRides == null or recentRides.isEmpty()}">
+                                <td colspan="4" class="text-center text-muted py-4">No rides requested yet</td>
+                            </tr>
+                            <tr th:each="r : ${recentRides}">
+                                <td class="fw-semibold font-monospace" th:text="${r.id}">r-1</td>
+                                <td>
+                                    <span th:text="${r.pickupPlace} + ' → ' + ${r.dropPlace}">fort → bamba</span>
+                                    <div class="text-muted small" th:text="${r.distanceKm} + ' km'">3.2 km</div>
+                                </td>
+                                <td class="fw-bold text-success" th:text="'Rs ' + (${r.fareFinal > 0 ? r.fareFinal : r.fareEstimate})">Rs 290</td>
+                                <td><span th:class="'badge-status badge-status-' + ${r.status}" th:text="${r.status}">COMPLETED</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Audit Log (A10) -->
+        <div class="col-lg-5">
+            <div class="card card-custom p-4 h-100">
+                <h5 class="fw-bold mb-3"><i class="bi bi-journal-text me-1"></i> Recent Audit Log</h5>
+                <div id="recentAuditsList" class="list-group list-group-flush small">
+                    <div class="list-group-item px-0 py-2 border-bottom" th:each="a : ${recentAudits}">
+                        <div class="d-flex justify-content-between text-muted">
+                            <span class="badge bg-secondary" th:text="${a.action}">APPROVE_DRIVER</span>
+                            <span th:text="${a.timestamp != null ? #temporals.format(a.timestamp, 'MM-dd HH:mm:ss') : ''}">10-10 09:30</span>
+                        </div>
+                        <div class="mt-1 text-dark">
+                            <strong>Target:</strong> <span th:text="${a.target}">u-1003</span>
+                            <span class="text-muted ms-2">(by <span th:text="${a.adminId}">admin</span>)</span>
+                        </div>
+                    </div>
+                    <div th:if="${recentAudits == null or recentAudits.isEmpty()}" class="text-center text-muted py-4">
+                        No administrative audit actions recorded yet.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script>
+// Dynamic live admin status sync - updates UI elements in-place WITHOUT page reloads
+function applyAdminData(data) {
+    if (!data || !data.authenticated) return;
+
+    // Metrics
+    const elRev = document.getElementById('statTotalRevenue');
+    if (elRev && data.totalRevenue !== undefined) elRev.textContent = 'Rs ' + data.totalRevenue;
+
+    const elFee = document.getElementById('statPlatformCommission');
+    if (elFee && data.platformCommission !== undefined) elFee.textContent = 'Rs ' + data.platformCommission;
+
+    const elComp = document.getElementById('statCompletedCount');
+    if (elComp && data.completedCount !== undefined) elComp.textContent = data.completedCount;
+
+    const elTot = document.getElementById('statTotalRides');
+    if (elTot && data.totalRides !== undefined) elTot.textContent = data.totalRides;
+
+    const elOnline = document.getElementById('statOnlineDrivers');
+    if (elOnline && data.onlineDrivers !== undefined) elOnline.textContent = data.onlineDrivers;
+
+    const elPending = document.getElementById('statPendingDrivers');
+    if (elPending && data.pendingDrivers !== undefined) elPending.textContent = data.pendingDrivers;
+
+    // Update Recent Rides Table dynamically
+    if (data.recentRides && Array.isArray(data.recentRides)) {
+        const tbody = document.getElementById('recentRidesTableBody');
+        if (tbody) {
+            if (data.recentRides.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">No rides requested yet</td></tr>';
+            } else {
+                let html = '';
+                for (const r of data.recentRides) {
+                    html += `<tr>
+                        <td class="fw-semibold font-monospace">${r.id}</td>
+                        <td>
+                            <span>${r.pickup} → ${r.drop}</span>
+                            <div class="text-muted small">${r.distanceKm} km</div>
+                        </td>
+                        <td class="fw-bold text-success">Rs ${r.fare}</td>
+                        <td><span class="badge-status badge-status-${r.status}">${r.status}</span></td>
+                    </tr>`;
+                }
+                tbody.innerHTML = html;
+            }
+        }
+    }
+
+    // Update Recent Audits List dynamically
+    if (data.recentAudits && Array.isArray(data.recentAudits)) {
+        const auditList = document.getElementById('recentAuditsList');
+        if (auditList) {
+            if (data.recentAudits.length === 0) {
+                auditList.innerHTML = '<div class="text-center text-muted py-4">No administrative audit actions recorded yet.</div>';
+            } else {
+                let html = '';
+                for (const a of data.recentAudits) {
+                    html += `<div class="list-group-item px-0 py-2 border-bottom">
+                        <div class="d-flex justify-content-between text-muted">
+                            <span class="badge bg-secondary">${a.action}</span>
+                            <span>${a.time}</span>
+                        </div>
+                        <div class="mt-1 text-dark">
+                            <strong>Target:</strong> <span>${a.target}</span>
+                            <span class="text-muted ms-2">(by <span>${a.adminId}</span>)</span>
+                        </div>
+                    </div>`;
+                }
+                auditList.innerHTML = html;
+            }
+        }
+    }
+}
+
+function syncAdminNow() {
+    const spinner = document.getElementById('syncSpinner');
+    if (spinner) spinner.classList.add('spinner-border', 'spinner-border-sm');
+    fetch('/admin/api/status')
+        .then(res => res.json())
+        .then(data => {
+            applyAdminData(data);
+            if (spinner) spinner.classList.remove('spinner-border', 'spinner-border-sm');
+        })
+        .catch(() => {
+            if (spinner) spinner.classList.remove('spinner-border', 'spinner-border-sm');
+        });
+}
+
+// Background auto-sync every 3 seconds (smooth, no page blink or reload)
+setInterval(() => {
+    fetch('/admin/api/status')
+        .then(res => res.json())
+        .then(data => applyAdminData(data))
+        .catch(() => {});
+}, 3000);
+</script>
+</body>
+</html>

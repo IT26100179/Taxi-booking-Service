@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Admin Portal Login')}">
+    <title>Admin Portal - Gamana</title>
+</head>
+<body class="bg-dark">
+
+<main class="d-flex align-items-center min-vh-100 py-4">
+    <div class="container">
+        <div class="auth-box bg-white shadow-lg" style="border: 1px solid #334155;">
+            <div class="auth-header">
+                <div class="auth-icon-circle bg-danger-subtle text-danger">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h2 class="fw-bold mb-1">Admin Portal</h2>
+                <p class="text-muted small">Gamana Platform Administration</p>
+            </div>
+
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+
+            <form th:action="@{/admin/login}" th:object="${form}" method="post" class="needs-validation" novalidate id="adminLoginForm">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="phone">Admin Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
+                        <input class="form-control" id="phone" name="phone" th:field="*{phone}"
+                               placeholder="0770000000" required pattern="0[0-9]{9}">
+                    </div>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="password">Admin Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                        <input class="form-control" id="password" name="password" th:field="*{password}"
+                               type="password" required minlength="8" placeholder="••••••••">
+                        <button class="btn btn-outline-secondary toggle-password-btn" type="button" tabindex="-1" title="Show/Hide Password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="showPw">
+                        <label class="form-check-label text-muted small" for="showPw">Show password</label>
+                    </div>
+                </div>
+
+                <button class="btn btn-danger w-100 py-2 mt-2 fw-semibold" type="submit">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Administration
+                </button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top text-center text-muted" style="font-size: 0.75rem;">
+                <i class="bi bi-shield-exclamation me-1"></i> Restricted access. Authorized administrative personnel only.
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/validation.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
