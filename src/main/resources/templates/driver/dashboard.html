@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Driver Dashboard')}">
+    <title>Driver Dashboard - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <!-- Top Driver Welcome & Status Bar -->
+    <div class="card card-custom p-4 mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h3 class="fw-bold mb-1" th:text="'Hello, ' + ${currentUser.fullName}">Hello Driver</h3>
+                <div class="d-flex align-items-center gap-2 small text-muted">
+                    <span><i class="bi bi-person-badge"></i> <strong th:text="${currentUser.id}">u-1003</strong></span>
+                    <span>&bull;</span>
+                    <span th:if="${vehicle != null}" th:text="${vehicle.makeModel} + ' (' + ${vehicle.plateNo} + ')'">Bajaj RE</span>
+                    <span>&bull;</span>
+                    <span th:class="'badge-status badge-status-' + ${currentUser.status}" th:text="${currentUser.status}">ACTIVE</span>
+                </div>
+            </div>
+
+            <!-- Refresh Button -->
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/driver}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Refresh Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case 1: Driver status is PENDING -->
+    <div th:if="${currentUser.status.name() == 'PENDING'}" class="alert alert-warning card-custom p-4 mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-clock-history fs-1 text-warning"></i>
+            <div>
+                <h4 class="fw-bold mb-1">Waiting for Admin Approval</h4>
+                <p class="mb-0 text-muted">Your driver profile and vehicle documents are currently under review by our admin team. You will be able to go online once approved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case 2: Driver status is REJECTED -->
+    <div th:if="${currentUser.status.name() == 'REJECTED'}" class="alert alert-danger card-custom p-4 mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-x-circle-fill fs-1 text-danger"></i>
+            <div>
+                <h4 class="fw-bold mb-1">Application Rejected</h4>
+                <p class="mb-0" th:text="${profile.rejectionNote != null && !profile.rejectionNote.isEmpty() ? 'Reason: ' + profile.rejectionNote : 'Please contact support.'}">Rejection note</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case 3: Driver status is ACTIVE -->
+    <div th:if="${currentUser.status.name() == 'ACTIVE'}">
+        <!-- Availability & Location Controls -->
+        <div class="card card-custom p-4 mb-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge p-3 rounded-circle" th:classappend="${profile.online ? 'bg-success' : 'bg-secondary'}">
+                            <i class="bi" th:classappend="${profile.online ? 'bi-broadcast text-white' : 'bi-power text-white'}"></i>
+                        </span>
+                        <div>
+                            <div class="text-muted small">Status</div>
+                            <h5 class="fw-bold mb-0" th:text="${profile.online ? 'ONLINE & READY' : 'OFFLINE'}">ONLINE</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2">
+                        <!-- If Offline: Button to go Online with area selection -->
+                        <form th:if="${!profile.online}" th:action="@{/driver/online}" method="post" class="d-flex gap-2 align-items-center">
+                            <select name="currentPlace" class="form-select form-select-sm" style="min-width: 170px;">
+                                <option th:each="p : ${places}" th:value="${p.key}" th:text="${p.name}" th:selected="${p.key == profile.currentPlace}"></option>
+                            </select>
+                            <button type="submit" class="btn btn-success btn-sm px-3 rounded-pill fw-semibold">
+                                <i class="bi bi-toggle-on me-1"></i> Go Online
+                            </button>
+                        </form>
+
+                        <!-- If Online: Change area and Go Offline -->
+                        <form th:if="${profile.online and activeRide == null}" th:action="@{/driver/area}" method="post" class="d-flex gap-2 align-items-center">
+                            <select name="currentPlace" class="form-select form-select-sm" style="min-width: 170px;" onchange="this.form.submit()">
+                                <option th:each="p : ${places}" th:value="${p.key}" th:text="'Area: ' + ${p.name}" th:selected="${p.key == profile.currentPlace}"></option>
+                            </select>
+                        </form>
+
+                        <form th:if="${profile.online and activeRide == null}" th:action="@{/driver/offline}" method="post" class="m-0">
+                            <button type="submit" class="btn btn-outline-danger btn-sm px-3 rounded-pill fw-semibold">
+                                <i class="bi bi-power me-1"></i> Go Offline
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INCOMING RIDE OFFER CARD (If offered to this driver) -->
+        <div th:if="${offerRide != null}" class="offer-alert mb-4 shadow-sm">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                    <i class="bi bi-bell-fill me-1"></i> INCOMING RIDE OFFER
+                </span>
+                <span class="fw-bold text-danger">
+                    <i class="bi bi-stopwatch"></i> Expiring soon (Offer auto-advances in 60s)
+                </span>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="text-muted small">Pickup Location</div>
+                    <div class="fw-bold fs-5 text-dark" th:text="${pickupPlace != null ? pickupPlace.name : offerRide.pickupPlace}">Colombo Fort</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Drop-off Destination</div>
+                    <div class="fw-bold fs-5 text-dark" th:text="${dropPlace != null ? dropPlace.name : offerRide.dropPlace}">Bambalapitiya</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Est. Distance &amp; Net Earnings</div>
+                    <div class="fw-bold fs-5 text-success">
+                        <span th:text="${offerRide.distanceKm} + ' km'">3.2 km</span> &bull;
+                        <span th:text="'Rs ' + ${driverCut}">Rs 250</span>
+                    </div>
+                    <div class="text-muted" style="font-size: 0.75rem;">(Gross fare Rs <span th:text="${offerRide.fareEstimate}"></span> less 15% commission)</div>
+                </div>
+            </div>
+
+            <!-- Interactive Route Map Preview for Incoming Offer -->
+            <div class="my-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small fw-bold text-muted">
+                        <i class="bi bi-map-fill text-warning me-1"></i> Route Map Preview (Pickup &bull; Drop-off)
+                    </span>
+                    <a th:if="${pickupPlace != null and dropPlace != null}"
+                       th:href="'https://www.google.com/maps/dir/?api=1&origin=' + ${pickupPlace.lat} + ',' + ${pickupPlace.lng} + '&destination=' + ${dropPlace.lat} + ',' + ${dropPlace.lng}" 
+                       target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" style="font-size: 0.78rem;">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Open Google Maps
+                    </a>
+                </div>
+                <div id="driverOfferMap" class="driver-map-box"></div>
+            </div>
+
+            <div class="d-flex gap-3">
+                <form th:action="@{/driver/rides/{id}/accept(id=${offerRide.id})}" method="post" class="m-0 flex-grow-1">
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold rounded-pill">
+                        <i class="bi bi-check-circle-fill me-1"></i> Accept Ride
+                    </button>
+                </form>
+                <form th:action="@{/driver/rides/{id}/decline(id=${offerRide.id})}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-outline-secondary py-2 px-4 rounded-pill">
+                        Decline
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ACTIVE TRIP CONTROLS CARD -->
+        <div th:if="${activeRide != null}" class="card card-custom p-4 mb-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill fw-bold">ACTIVE TRIP</span>
+                    <span th:class="'badge-status badge-status-' + ${activeRide.status}" th:text="${activeRide.status}">ACCEPTED</span>
+                </div>
+                <div class="fw-bold text-success fs-5">
+                    Collect: Rs <span th:text="${activeRide.fareEstimate}">290</span>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="text-muted small">Passenger Contact</div>
+                    <div class="fw-bold text-dark" th:text="${passengerUser != null ? passengerUser.fullName : 'Passenger'}">Passenger Name</div>
+                    <div class="text-muted small" th:text="${passengerUser != null ? passengerUser.phone : ''}">0771234567</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Pickup Place</div>
+                    <div class="fw-semibold text-dark" th:text="${pickupPlace != null ? pickupPlace.name : activeRide.pickupPlace}">Fort</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Drop-off Destination</div>
+                    <div class="fw-semibold text-dark" th:text="${dropPlace != null ? dropPlace.name : activeRide.dropPlace}">Bamba</div>
+                </div>
+            </div>
+
+            <!-- Interactive Route Navigation Map for Active Trip -->
+            <div class="mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                    <span class="small fw-bold text-muted">
+                        <i class="bi bi-geo-alt-fill text-primary me-1"></i> Trip Navigation Map (Pickup &bull; Drop-off)
+                    </span>
+                    <div class="d-flex flex-wrap gap-2" th:if="${pickupPlace != null and dropPlace != null}">
+                        <a th:if="${activeRide.status.name() == 'ACCEPTED'}"
+                           th:href="'https://www.google.com/maps/dir/?api=1&destination=' + ${pickupPlace.lat} + ',' + ${pickupPlace.lng}" 
+                           target="_blank" class="btn btn-sm btn-outline-success rounded-pill fw-semibold py-1 px-3">
+                            <i class="bi bi-cursor-fill me-1"></i> Turn-by-Turn to Pickup
+                        </a>
+                        <a th:if="${activeRide.status.name() == 'ARRIVED' or activeRide.status.name() == 'ONTRIP'}"
+                           th:href="'https://www.google.com/maps/dir/?api=1&destination=' + ${dropPlace.lat} + ',' + ${dropPlace.lng}" 
+                           target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-semibold py-1 px-3">
+                            <i class="bi bi-signpost-2-fill me-1"></i> Turn-by-Turn to Drop-off
+                        </a>
+                        <a th:href="'https://www.google.com/maps/dir/?api=1&origin=' + ${pickupPlace.lat} + ',' + ${pickupPlace.lng} + '&destination=' + ${dropPlace.lat} + ',' + ${dropPlace.lng}" 
+                           target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill py-1 px-2" style="font-size: 0.8rem;">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Full Route
+                        </a>
+                    </div>
+                </div>
+                <div id="driverTripMap" class="driver-map-box"></div>
+            </div>
+
+            <!-- Trip Steps Buttons -->
+            <div class="d-flex flex-wrap gap-2">
+                <!-- Step 1: Arrived -->
+                <form th:if="${activeRide.status.name() == 'ACCEPTED'}" th:action="@{/driver/rides/{id}/arrived(id=${activeRide.id})}" method="post" class="flex-grow-1 m-0">
+                    <button type="submit" class="btn btn-primary-custom w-100 py-3 fw-bold">
+                        <i class="bi bi-geo-alt-fill me-1"></i> I Have Arrived at Pickup Location
+                    </button>
+                </form>
+
+                <!-- Step 2: Start Trip -->
+                <form th:if="${activeRide.status.name() == 'ARRIVED'}" th:action="@{/driver/rides/{id}/start(id=${activeRide.id})}" method="post" class="flex-grow-1 m-0">
+                    <button type="submit" class="btn btn-warning w-100 py-3 fw-bold text-dark">
+                        <i class="bi bi-play-circle-fill me-1"></i> Passenger Onboard - Start Trip
+                    </button>
+                </form>
+
+                <!-- Step 3: Complete Trip -->
+                <form th:if="${activeRide.status.name() == 'ONTRIP'}" th:action="@{/driver/rides/{id}/complete(id=${activeRide.id})}" method="post" class="flex-grow-1 m-0">
+                    <button type="submit" class="btn btn-success w-100 py-3 fw-bold">
+                        <i class="bi bi-cash-coin me-1"></i> Complete Trip &amp; Collect Cash (Rs <span th:text="${activeRide.fareEstimate}"></span>)
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Driver Earnings and Ratings Overview -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card card-stat">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Net Earnings</div>
+                            <h3 class="fw-bold mb-0 text-success" th:text="'Rs ' + ${earnings}">Rs 0</h3>
+                            <div class="text-muted" style="font-size: 0.75rem;">After 15% platform commission</div>
+                        </div>
+                        <div class="stat-icon bg-success-subtle text-success">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-stat">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Completed Rides</div>
+                            <h3 class="fw-bold mb-0 text-dark" th:text="${completedTrips}">0</h3>
+                            <div class="text-muted" style="font-size: 0.75rem;">Successful cash trips</div>
+                        </div>
+                        <div class="stat-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-stat">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-muted small fw-semibold">Driver Rating</div>
+                            <h3 class="fw-bold mb-0 text-warning">
+                                <i class="bi bi-star-fill text-warning fs-5"></i>
+                                <span th:text="${rating > 0 ? #numbers.formatDecimal(rating, 1, 1) : 'New'}">5.0</span>
+                            </h3>
+                            <div class="text-muted" style="font-size: 0.75rem;">Passenger feedback</div>
+                        </div>
+                        <div class="stat-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Trips Table -->
+        <div th:if="${recentRides != null and !recentRides.isEmpty()}" class="card card-custom p-4 mb-4">
+            <h5 class="fw-bold mb-3">Recent Trips</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted">
+                        <tr>
+                            <th>Ride ID</th>
+                            <th>Route</th>
+                            <th>Distance</th>
+                            <th>Fare</th>
+                            <th>Status</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${recentRides}">
+                            <td class="fw-semibold" th:text="${r.id}">r-1</td>
+                            <td th:text="${r.pickupPlace} + ' → ' + ${r.dropPlace}">fort → bamba</td>
+                            <td th:text="${r.distanceKm} + ' km'">3.2 km</td>
+                            <td class="fw-bold text-success" th:text="'Rs ' + ${r.fareFinal}">Rs 290</td>
+                            <td><span th:class="'badge-status badge-status-' + ${r.status}" th:text="${r.status}">COMPLETED</span></td>
+                            <td>
+                                <span th:if="${r.rating > 0}" class="text-warning fw-semibold">
+                                    <i class="bi bi-star-fill"></i> <span th:text="${r.rating}"></span>
+                                </span>
+                                <span th:if="${r.rating == 0}" class="text-muted">-</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Hidden data container for driver map coordinates -->
+    <div id="driverRouteData" th:if="${pickupPlace != null and dropPlace != null}"
+         th:data-pickup-name="${pickupPlace.name}"
+         th:data-pickup-lat="${pickupPlace.lat}"
+         th:data-pickup-lng="${pickupPlace.lng}"
+         th:data-drop-name="${dropPlace.name}"
+         th:data-drop-lat="${dropPlace.lat}"
+         th:data-drop-lng="${dropPlace.lng}"
+         style="display: none;"></div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script th:src="@{/js/driver-map.js}"></script>
+<script>
+// Live driver status polling - auto updates when new ride offer arrives, rating changes, or earnings update
+(function() {
+    let lastDriverKey = null;
+    function checkLiveDriver() {
+        fetch('/driver/api/status')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.authenticated) return;
+                const driverKey = `${data.hasOffer}:${data.offerId}:${data.hasActive}:${data.activeStatus}:${data.rating}:${data.completed}:${data.earnings}`;
+                if (lastDriverKey !== null && lastDriverKey !== driverKey) {
+                    window.location.reload();
+                }
+                lastDriverKey = driverKey;
+            })
+            .catch(() => {});
+    }
+    setInterval(checkLiveDriver, 2000);
+    checkLiveDriver();
+})();
+</script>
+</body>
+</html>
