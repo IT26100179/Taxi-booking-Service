@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Driver Registration')}">
+    <title>Driver Sign Up - Gamana</title>
+</head>
+<body class="bg-light">
+
+<main class="py-5">
+    <div class="container" style="max-width: 680px;">
+        <div class="card card-custom p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="auth-icon-circle" style="background: #e0f2fe; color: #0284c7;">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
+                <h2 class="fw-bold mb-1">Driver Partner Registration</h2>
+                <p class="text-muted small">Join our driver network and start earning</p>
+            </div>
+
+            <div th:replace="~{fragments/layout :: alerts}"></div>
+
+            <form th:action="@{/driver/register}" th:object="${form}" method="post" class="needs-validation" novalidate id="driverRegisterForm">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">1. Personal Information</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="fullName">Full Name</label>
+                        <input class="form-control" id="fullName" name="fullName" th:field="*{fullName}"
+                               placeholder="Kasun Silva" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="phone">Phone Number</label>
+                        <input class="form-control" id="phone" name="phone" th:field="*{phone}"
+                               placeholder="0712345678" required pattern="0[0-9]{9}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" for="email">Email Address <span class="text-muted fw-normal">(Optional)</span></label>
+                        <input class="form-control" id="email" name="email" th:field="*{email}"
+                               type="email" placeholder="kasun@mail.com">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="password">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+                            <input class="form-control" id="password" name="password" th:field="*{password}"
+                                   type="password" required minlength="8" placeholder="At least 8 chars">
+                            <button class="btn btn-outline-secondary toggle-password-btn" type="button" tabindex="-1" title="Show/Hide Password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="confirmPassword">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-lock-fill"></i></span>
+                            <input class="form-control" id="confirmPassword" name="confirmPassword" th:field="*{confirmPassword}"
+                                   type="password" required minlength="8" placeholder="Repeat password">
+                            <button class="btn btn-outline-secondary toggle-password-btn" type="button" tabindex="-1" title="Show/Hide Password">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="showPw">
+                            <label class="form-check-label text-muted small" for="showPw">Show passwords</label>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">2. Identity &amp; Verification</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="nic">National ID (NIC)</label>
+                        <input class="form-control" id="nic" name="nic" th:field="*{nic}"
+                               placeholder="199912345678" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nic')}" th:errors="*{nic}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="licenseNo">Driving License Number</label>
+                        <input class="form-control" id="licenseNo" name="licenseNo" th:field="*{licenseNo}"
+                               placeholder="B1234567" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('licenseNo')}" th:errors="*{licenseNo}"></div>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">3. Vehicle Details</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="typeId">Vehicle Category</label>
+                        <select class="form-select" id="typeId" name="typeId" required>
+                            <option value="">Select vehicle type...</option>
+                            <option th:each="t : ${types}" th:value="${t.id}"
+                                    th:selected="${form != null and form.typeId != null and form.typeId == t.id}"
+                                    th:text="${t.name} + ' (Base: Rs ' + ${T(java.lang.Math).round(t.baseFare)} + ', Rs ' + ${T(java.lang.Math).round(t.perKmRate)} + '/km)'">
+                            </option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('typeId')}" th:errors="*{typeId}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="plateNo">License Plate Number</label>
+                        <input class="form-control" id="plateNo" name="plateNo" th:field="*{plateNo}"
+                               placeholder="WP KA-4821" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('plateNo')}" th:errors="*{plateNo}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="makeModel">Make &amp; Model</label>
+                        <input class="form-control" id="makeModel" name="makeModel" th:field="*{makeModel}"
+                               placeholder="Bajaj RE / Suzuki Alto" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('makeModel')}" th:errors="*{makeModel}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="color">Vehicle Color</label>
+                        <input class="form-control" id="color" name="color" th:field="*{color}"
+                               placeholder="Yellow / White" required>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning small mb-4">
+                    <i class="bi bi-info-circle me-1"></i>
+                    After submission, your application will be marked as <strong>PENDING</strong> until reviewed and approved by an administrator.
+                </div>
+
+                <button class="btn btn-dark-custom w-100 py-3" type="submit">
+                    <i class="bi bi-send-fill me-1"></i> Submit Driver Application
+                </button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top text-center small text-muted">
+                <p class="mb-0">Already registered as a driver? <a th:href="@{/driver/login}" class="fw-bold text-dark text-decoration-none">Driver Login</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/validation.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
