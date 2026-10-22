@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Fare Rates Management')}">
+    <title>Fare Rates - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <div class="card card-custom p-4 mb-4">
+        <div class="mb-4">
+            <h3 class="fw-bold mb-1">Vehicle Fare Rates</h3>
+            <p class="text-muted small mb-0">Manage base fares and per-kilometer rates for all vehicle categories. Updates apply immediately to future trip calculations.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" th:each="t : ${types}">
+                <div class="card card-custom p-4 border h-100 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-dark fs-6 px-3 py-2 rounded-pill font-monospace" th:text="${t.name}">TUK</span>
+                        <span class="text-muted small font-monospace" th:text="'ID: ' + ${t.id}">ID: 2</span>
+                    </div>
+
+                    <form th:action="@{/admin/rates}" method="post">
+                        <input type="hidden" name="id" th:value="${t.id}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">Base Fare (LKR)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">Rs</span>
+                                <input type="number" step="1" min="0" class="form-control fw-bold" name="baseFare" th:value="${T(java.lang.String).format('%.0f', t.baseFare)}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-semibold text-muted">Per Kilometer Rate (LKR/km)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">Rs</span>
+                                <input type="number" step="1" min="1" class="form-control fw-bold" name="perKmRate" th:value="${T(java.lang.String).format('%.0f', t.perKmRate)}" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom w-100 rounded-pill btn-sm py-2">
+                            <i class="bi bi-save me-1"></i> Update Rates
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
