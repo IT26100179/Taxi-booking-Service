@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('My Ride History')}">
+    <title>My Ride History - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <div class="card card-custom p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">My Ride History</h3>
+                <p class="text-muted small mb-0">Record of all your trips booked on Gamana</p>
+            </div>
+            <a th:href="@{/passenger}" class="btn btn-primary-custom btn-sm rounded-pill px-3">
+                <i class="bi bi-plus-circle me-1"></i> Book a New Ride
+            </a>
+        </div>
+
+        <div th:if="${rides == null or rides.isEmpty()}" class="text-center py-5">
+            <div class="auth-icon-circle bg-light text-muted mb-3">
+                <i class="bi bi-clock-history fs-2"></i>
+            </div>
+            <h5 class="fw-bold text-muted">No rides yet</h5>
+            <p class="text-muted small">You haven't requested any rides yet. Book your first ride now!</p>
+            <a th:href="@{/passenger}" class="btn btn-primary-custom px-4 rounded-pill">Book Ride</a>
+        </div>
+
+        <div th:if="${rides != null and !rides.isEmpty()}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Date &amp; Time</th>
+                        <th>Route</th>
+                        <th>Vehicle</th>
+                        <th>Driver</th>
+                        <th>Fare</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${rides}">
+                        <td class="fw-semibold font-monospace" th:text="${r.id}">r-1</td>
+                        <td class="small text-muted" th:text="${r.requestedAt != null ? #temporals.format(r.requestedAt, 'yyyy-MM-dd HH:mm') : '-'}">2026-10-10 10:00</td>
+                        <td>
+                            <div class="fw-semibold text-dark" th:text="${places.containsKey(r.pickupPlace) ? places.get(r.pickupPlace).name : r.pickupPlace} + ' → ' + ${places.containsKey(r.dropPlace) ? places.get(r.dropPlace).name : r.dropPlace}">Fort → Bamba</div>
+                            <span class="small text-muted" th:text="${r.distanceKm} + ' km'">3.2 km</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border" th:text="${typeNames.get(r.typeId)}">TUK</span>
+                        </td>
+                        <td>
+                            <span th:text="${driverNames.containsKey(r.driverId) ? driverNames.get(r.driverId) : (r.driverId != null && !r.driverId.isBlank() ? r.driverId : 'Unassigned')}">Kasun</span>
+                        </td>
+                        <td>
+                            <strong class="text-success" th:text="'Rs ' + (${r.fareFinal > 0 ? r.fareFinal : r.fareEstimate})">Rs 290</strong>
+                            <div th:if="${r.promoCode != null && !r.promoCode.isEmpty()}" class="small text-muted" th:text="'Promo: ' + ${r.promoCode}"></div>
+                        </td>
+                        <td>
+                            <span th:class="'badge-status badge-status-' + ${r.status}" th:text="${r.status}">COMPLETED</span>
+                        </td>
+                        <td>
+                            <span th:if="${r.rating > 0}" class="text-warning fw-semibold">
+                                <i class="bi bi-star-fill"></i> <span th:text="${r.rating}"></span>/5
+                            </span>
+                            <span th:if="${r.rating == 0}" class="text-muted small">-</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
