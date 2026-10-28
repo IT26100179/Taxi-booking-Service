@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Manage Drivers')}">
+    <title>Manage Drivers - Gamana</title>
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<main class="container py-4">
+    <div class="card card-custom p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Driver Partner Management</h3>
+                <p class="text-muted small mb-0">Review applications, approve new drivers, and manage driver statuses</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="btn-group btn-group-sm rounded-pill p-1 bg-light border">
+                <a th:href="@{/admin/drivers?status=ALL}" class="btn rounded-pill px-3"
+                   th:classappend="${currentFilter == 'ALL' ? 'btn-dark' : 'btn-light'}">All</a>
+                <a th:href="@{/admin/drivers?status=PENDING}" class="btn rounded-pill px-3"
+                   th:classappend="${currentFilter == 'PENDING' ? 'btn-warning text-dark' : 'btn-light'}">Pending</a>
+                <a th:href="@{/admin/drivers?status=ACTIVE}" class="btn rounded-pill px-3"
+                   th:classappend="${currentFilter == 'ACTIVE' ? 'btn-success' : 'btn-light'}">Active</a>
+                <a th:href="@{/admin/drivers?status=SUSPENDED}" class="btn rounded-pill px-3"
+                   th:classappend="${currentFilter == 'SUSPENDED' ? 'btn-danger' : 'btn-light'}">Suspended</a>
+                <a th:href="@{/admin/drivers?status=REJECTED}" class="btn rounded-pill px-3"
+                   th:classappend="${currentFilter == 'REJECTED' ? 'btn-secondary' : 'btn-light'}">Rejected</a>
+            </div>
+        </div>
+
+        <div th:if="${drivers == null or drivers.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-person-x fs-1 text-muted d-block mb-2"></i>
+            <h5 class="fw-bold text-muted">No drivers found</h5>
+            <p class="text-muted small">No drivers currently match the filter: <span th:text="${currentFilter}"></span></p>
+        </div>
+
+        <div th:if="${drivers != null and !drivers.isEmpty()}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>Driver Info</th>
+                        <th>Credentials</th>
+                        <th>Vehicle</th>
+                        <th>Current Area</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="d : ${drivers}">
+                        <td>
+                            <div class="fw-bold text-dark" th:text="${d.user.fullName}">Kasun Silva</div>
+                            <div class="text-muted small">
+                                <i class="bi bi-phone"></i> <span th:text="${d.user.phone}">0712345678</span>
+                                <span th:if="${d.user.email != null and !d.user.email.isEmpty()}" th:text="' &bull; ' + ${d.user.email}"></span>
+                            </div>
+                            <div class="text-muted font-monospace" style="font-size: 0.75rem;" th:text="${d.user.id}">u-1003</div>
+                        </td>
+                        <td>
+                            <div class="small">NIC: <strong th:text="${d.profile.nicNumber}">199912345678</strong></div>
+                            <div class="small text-muted">Lic: <span th:text="${d.profile.licenseNo}">B1234567</span></div>
+                        </td>
+                        <td>
+                            <div th:if="${d.vehicle != null}">
+                                <span class="badge bg-dark font-monospace" th:text="${d.vehicle.plateNo}">WP KA-4821</span>
+                                <div class="small text-muted mt-1" th:text="${d.vehicle.makeModel} + ' (' + ${d.vehicleTypeName} + ')'">Bajaj RE</div>
+                            </div>
+                            <span th:if="${d.vehicle == null}" class="text-muted small">No vehicle</span>
+                        </td>
+                        <td>
+                            <span th:if="${d.profile.online}" class="badge bg-success-subtle text-success border border-success-subtle">
+                                <i class="bi bi-broadcast me-1"></i> <span th:text="${places.containsKey(d.profile.currentPlace) ? places.get(d.profile.currentPlace).name : d.profile.currentPlace}">Fort</span>
+                            </span>
+                            <span th:if="${!d.profile.online}" class="badge bg-secondary-subtle text-secondary">
+                                Offline (<span th:text="${places.containsKey(d.profile.currentPlace) ? places.get(d.profile.currentPlace).name : d.profile.currentPlace}">Fort</span>)
+                            </span>
+                        </td>
+                        <td>
+                            <span th:class="'badge-status badge-status-' + ${d.user.status}" th:text="${d.user.status}">PENDING</span>
+                            <div th:if="${d.profile.rejectionNote != null and !d.profile.rejectionNote.isEmpty()}" class="small text-danger mt-1" th:text="'Note: ' + ${d.profile.rejectionNote}"></div>
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                <!-- Approve button (for PENDING) -->
+                                <form th:if="${d.user.status.name() == 'PENDING'}" th:action="@{/admin/drivers/{id}/approve(id=${d.user.id})}" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-success btn-sm rounded-pill px-3">
+                                        <i class="bi bi-check-lg me-1"></i> Approve
+                                    </button>
+                                </form>
+
+                                <!-- Reject button (for PENDING) -->
+                                <button th:if="${d.user.status.name() == 'PENDING'}" type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                        data-bs-toggle="modal" th:attr="data-bs-target='#rejectModal-' + ${d.user.id}">
+                                    Reject
+                                </button>
+
+                                <!-- Suspend button (for ACTIVE) -->
+                                <form th:if="${d.user.status.name() == 'ACTIVE'}" th:action="@{/admin/drivers/{id}/suspend(id=${d.user.id})}" method="post" class="m-0"
+                                      onsubmit="return confirm('Suspend this driver?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                        Suspend
+                                    </button>
+                                </form>
+
+                                <!-- Reinstate button (for SUSPENDED or REJECTED) -->
+                                <form th:if="${d.user.status.name() == 'SUSPENDED' or d.user.status.name() == 'REJECTED'}" th:action="@{/admin/drivers/{id}/reinstate(id=${d.user.id})}" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                                        Reinstate
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade text-start" th:id="'rejectModal-' + ${d.user.id}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form th:action="@{/admin/drivers/{id}/reject(id=${d.user.id})}" method="post">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Reject Driver Application</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="small text-muted">Please provide a reason for rejecting <strong th:text="${d.user.fullName}"></strong>. This reason will be displayed to the driver on login.</p>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Rejection Reason</label>
+                                                    <textarea name="note" class="form-control" rows="3" required placeholder="e.g. Expired driving license or unclear vehicle photos..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger btn-sm rounded-pill">Confirm Rejection</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gamana Taxi &amp; Cab Service - Your Trusted Ride across Sri Lanka</title>
+    <meta name="description" content="Book affordable, safe, and reliable taxi and cab rides in Sri Lanka. Choose from Tuk Tuks, Cars, Bikes, and Vans with upfront transparent fares.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark landing-nav sticky-top py-3">
+    <div class="container">
+        <a class="navbar-brand text-white" th:href="@{/}">
+            <i class="bi bi-geo-alt-fill text-warning fs-4"></i>
+            <span class="fw-bold tracking-tight">Gamana</span>
+            <span class="brand-badge ms-1">TAXI</span>
+        </a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#landingNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="landingNavbar">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#fleet">Our Fleet</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#estimator">Fare Estimator</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#why-us">Why Gamana</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#how-it-works">How It Works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#driver-section">Drive With Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white-50 hover-text-white" href="#faq">FAQ</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2">
+                <!-- If logged in -->
+                <div th:if="${session.role != null}" class="d-flex align-items-center gap-3">
+                    <div class="text-white text-end d-none d-sm-block">
+                        <span class="small text-white-50">Logged in as</span>
+                        <div class="fw-bold small" th:text="${session.userName != null ? session.userName : session.role}">User</div>
+                    </div>
+
+                    <a th:if="${session.role == 'PASSENGER'}" th:href="@{/passenger}" class="btn btn-primary-custom btn-sm px-3 shadow-sm">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
+                    <a th:if="${session.role == 'DRIVER'}" th:href="@{/driver}" class="btn btn-warning btn-sm px-3 fw-bold shadow-sm">
+                        <i class="bi bi-speedometer2 me-1"></i> Driver Portal
+                    </a>
+                    <a th:if="${session.role == 'ADMIN'}" th:href="@{/admin}" class="btn btn-danger btn-sm px-3 fw-bold shadow-sm">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Admin Panel
+                    </a>
+
+                    <form th:action="@{/logout}" method="post" class="m-0">
+                        <button type="submit" class="btn btn-outline-light btn-sm rounded-pill px-3" title="Logout">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- If guest -->
+                <div th:if="${session.role == null}" class="d-flex align-items-center gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle rounded-pill px-3" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li><h6 class="dropdown-header text-uppercase small text-muted">Select Portal</h6></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/login}"><i class="bi bi-person me-2 text-primary"></i> Passenger Login</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/driver/login}"><i class="bi bi-car-front me-2 text-warning"></i> Driver Login</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 text-danger" th:href="@{/admin/login}"><i class="bi bi-shield-lock me-2"></i> Admin Portal</a></li>
+                        </ul>
+                    </div>
+
+                    <a th:href="@{/register}" class="btn btn-primary-custom btn-sm px-3 rounded-pill shadow-sm">
+                        <i class="bi bi-person-plus-fill me-1"></i> Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="landing-hero">
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="hero-pill-badge">
+                    <i class="bi bi-shield-fill-check text-warning"></i>
+                    <span>Sri Lanka's 100% Reliable Ride Network</span>
+                </div>
+                <h1 class="hero-title">
+                    Your Trusted Ride Across Sri Lanka, <span class="highlight">Anytime.</span>
+                </h1>
+                <p class="hero-lead">
+                    Safe, affordable, and transparent taxi and cab bookings. From speedy Tuk Tuks to spacious Air-Conditioned Vans, reach your destination with ease.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-primary-custom btn-lg px-4 py-3 shadow-lg">
+                        <i class="bi bi-taxi-front-fill me-2"></i> Book a Ride Now
+                    </a>
+                    <a href="#estimator" class="btn btn-outline-light btn-lg px-4 py-3 rounded-3">
+                        <i class="bi bi-calculator me-2"></i> Estimate Fare
+                    </a>
+                    <a th:href="@{/driver/register}" class="btn btn-link text-warning text-decoration-none fw-semibold">
+                        Drive &amp; Earn with us <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Trust pills -->
+                <div class="d-flex flex-wrap gap-4 mt-5 pt-3 border-top border-white border-opacity-10 text-white-50 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span>Zero Hidden Charges</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span>Verified Sri Lankan Drivers</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span>24/7 Islandwide Availability</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Live Fare Estimator Widget -->
+            <div class="col-lg-5" id="estimator">
+                <div class="glass-card p-4 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0 text-dark">
+                            <i class="bi bi-calculator-fill text-success me-2"></i>Fare Estimator
+                        </h4>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">Live Rates</span>
+                    </div>
+                    <p class="text-muted small mb-3">Calculate upfront trip fare before booking your ride.</p>
+
+                    <!-- Vehicle Selector -->
+                    <label class="form-label fw-bold small text-secondary text-uppercase mb-2">1. Select Vehicle</label>
+                    <div class="estimator-type-grid mb-3">
+                        <div class="estimator-type-btn" data-type="BIKE" data-base="50" data-perkm="45" onclick="selectEstimatorType(this)">
+                            <span class="type-icon">🛵</span>
+                            <span class="type-name">Bike</span>
+                        </div>
+                        <div class="estimator-type-btn active" data-type="TUK" data-base="80" data-perkm="65" onclick="selectEstimatorType(this)">
+                            <span class="type-icon">🛺</span>
+                            <span class="type-name">Tuk</span>
+                        </div>
+                        <div class="estimator-type-btn" data-type="CAR" data-base="150" data-perkm="95" onclick="selectEstimatorType(this)">
+                            <span class="type-icon">🚗</span>
+                            <span class="type-name">Car</span>
+                        </div>
+                        <div class="estimator-type-btn" data-type="VAN" data-base="220" data-perkm="120" onclick="selectEstimatorType(this)">
+                            <span class="type-icon">🚐</span>
+                            <span class="type-name">Van</span>
+                        </div>
+                    </div>
+
+                    <!-- Distance Slider & Input -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="distanceRange" class="form-label fw-bold small text-secondary text-uppercase mb-0">2. Trip Distance</label>
+                            <span class="badge bg-light text-dark border fw-bold fs-6" id="distanceDisplay">8 KM</span>
+                        </div>
+                        <input type="range" class="form-range" id="distanceRange" min="1" max="60" value="8" oninput="updateEstimatorDistance(this.value)">
+                        <div class="d-flex justify-content-between text-muted" style="font-size: 0.75rem;">
+                            <span>1 KM (Short hop)</span>
+                            <span>30 KM</span>
+                            <span>60 KM (Airport / Outstation)</span>
+                        </div>
+                    </div>
+
+                    <!-- Promo Code input -->
+                    <div class="mb-3">
+                        <label for="promoInput" class="form-label fw-bold small text-secondary text-uppercase mb-1">3. Promo Code (Optional)</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" id="promoInput" class="form-control" placeholder="Try: WELCOME50 or GAMANA100" style="text-transform: uppercase;">
+                            <button class="btn btn-outline-dark" type="button" onclick="applyEstimatorPromo()">Apply</button>
+                        </div>
+                        <div id="promoNotice" class="small mt-1 text-success d-none">
+                            <i class="bi bi-tag-fill me-1"></i> <span id="promoText">Promo Applied!</span>
+                        </div>
+                    </div>
+
+                    <!-- Fare Breakdown & Total -->
+                    <div class="fare-display-box mb-3">
+                        <div class="d-flex justify-content-between small text-white-50 mb-1">
+                            <span>Base Fare:</span>
+                            <span id="breakdownBase">Rs. 80</span>
+                        </div>
+                        <div class="d-flex justify-content-between small text-white-50 mb-1">
+                            <span>Distance Fare:</span>
+                            <span id="breakdownKm">Rs. 520 (8 km @ Rs. 65)</span>
+                        </div>
+                        <div id="promoRow" class="d-flex justify-content-between small text-warning mb-2 d-none">
+                            <span>Discount:</span>
+                            <span id="breakdownDiscount">- Rs. 50</span>
+                        </div>
+                        <hr class="my-2 border-secondary">
+                        <div class="small text-uppercase text-white-50 fw-semibold">Estimated Fare</div>
+                        <div class="fare-amount" id="totalFareDisplay">Rs. 600</div>
+                        <div class="text-white-50" style="font-size: 0.72rem;">*Actual fare may slightly vary based on route and tolls.</div>
+                    </div>
+
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-primary-custom w-100 py-2 fw-bold text-center">
+                        <i class="bi bi-compass me-1"></i> Proceed to Book This Ride
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Island Statistics Strip -->
+<div class="container">
+    <div class="stats-strip">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="stat-item border-end">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label"><i class="bi bi-check2-circle text-success me-1"></i> Rides Completed</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item border-end-md">
+                    <div class="stat-number">1,500+</div>
+                    <div class="stat-label"><i class="bi bi-person-badge text-primary me-1"></i> Active Drivers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item border-end">
+                    <div class="stat-number">4.9 / 5</div>
+                    <div class="stat-label"><i class="bi bi-star-fill text-warning me-1"></i> Rider Satisfaction</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Cities Covered</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fleet Showcase Section -->
+<section class="py-5 my-4" id="fleet">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase">Vehicle Options</span>
+            <h2 class="fw-bold mt-2 display-6">Our Diverse Island Fleet</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Choose the perfect ride to suit your budget, party size, and comfort requirements.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Bike -->
+            <div class="col-md-6 col-lg-3">
+                <div class="fleet-card">
+                    <div class="fleet-icon-wrapper bg-info-subtle text-info">
+                        <span>🛵</span>
+                    </div>
+                    <span class="badge bg-secondary-subtle text-secondary align-self-start mb-2">Fast &amp; Solo</span>
+                    <h4 class="fw-bold mb-1">Bike</h4>
+                    <p class="text-muted small mb-3">Beat Sri Lankan traffic with single-rider express trips.</p>
+
+                    <div class="fleet-rate-tag mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Base Fare:</span>
+                            <span class="fw-bold text-dark">Rs. 50</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Per KM:</span>
+                            <span class="fw-bold text-success">Rs. 45 / km</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled small text-muted mb-4">
+                        <li class="mb-2"><i class="bi bi-person me-2 text-dark"></i> 1 Passenger</li>
+                        <li class="mb-2"><i class="bi bi-backpack me-2 text-dark"></i> Light backpack</li>
+                        <li class="mb-2"><i class="bi bi-shield-check me-2 text-success"></i> Helmet provided</li>
+                    </ul>
+
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-outline-success mt-auto w-100 rounded-3 fw-semibold">
+                        Book Bike
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tuk Tuk -->
+            <div class="col-md-6 col-lg-3">
+                <div class="fleet-card border-success" style="box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.15);">
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-success text-white px-2 py-1">Most Popular</span>
+                    </div>
+                    <div class="fleet-icon-wrapper bg-success-subtle text-success">
+                        <span>🛺</span>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning align-self-start mb-2">Island Favorite</span>
+                    <h4 class="fw-bold mb-1">Tuk Tuk</h4>
+                    <p class="text-muted small mb-3">The quintessential Sri Lankan ride for budget city travel.</p>
+
+                    <div class="fleet-rate-tag mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Base Fare:</span>
+                            <span class="fw-bold text-dark">Rs. 80</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Per KM:</span>
+                            <span class="fw-bold text-success">Rs. 65 / km</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled small text-muted mb-4">
+                        <li class="mb-2"><i class="bi bi-people me-2 text-dark"></i> Up to 3 Passengers</li>
+                        <li class="mb-2"><i class="bi bi-briefcase me-2 text-dark"></i> Medium luggage space</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2 text-success"></i> Narrow street agile</li>
+                    </ul>
+
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-primary-custom mt-auto w-100 rounded-3">
+                        Book Tuk
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sedan / Car -->
+            <div class="col-md-6 col-lg-3">
+                <div class="fleet-card">
+                    <div class="fleet-icon-wrapper bg-primary-subtle text-primary">
+                        <span>🚗</span>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary align-self-start mb-2">AC Comfort</span>
+                    <h4 class="fw-bold mb-1">Car / Sedan</h4>
+                    <p class="text-muted small mb-3">Air-conditioned comfort for office trips, family, or rain.</p>
+
+                    <div class="fleet-rate-tag mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Base Fare:</span>
+                            <span class="fw-bold text-dark">Rs. 150</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Per KM:</span>
+                            <span class="fw-bold text-success">Rs. 95 / km</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled small text-muted mb-4">
+                        <li class="mb-2"><i class="bi bi-people me-2 text-dark"></i> Up to 4 Passengers</li>
+                        <li class="mb-2"><i class="bi bi-snow me-2 text-info"></i> Full Climate Control</li>
+                        <li class="mb-2"><i class="bi bi-suitcase-lg me-2 text-dark"></i> Spacious boot space</li>
+                    </ul>
+
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-outline-success mt-auto w-100 rounded-3 fw-semibold">
+                        Book Car
+                    </a>
+                </div>
+            </div>
+
+            <!-- Van -->
+            <div class="col-md-6 col-lg-3">
+                <div class="fleet-card">
+                    <div class="fleet-icon-wrapper bg-warning-subtle text-warning">
+                        <span>🚐</span>
+                    </div>
+                    <span class="badge bg-dark-subtle text-dark align-self-start mb-2">Group &amp; Airport</span>
+                    <h4 class="fw-bold mb-1">Van / MPV</h4>
+                    <p class="text-muted small mb-3">Ideal for tour groups, large families, and airport transfers.</p>
+
+                    <div class="fleet-rate-tag mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Base Fare:</span>
+                            <span class="fw-bold text-dark">Rs. 220</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Per KM:</span>
+                            <span class="fw-bold text-success">Rs. 120 / km</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled small text-muted mb-4">
+                        <li class="mb-2"><i class="bi bi-people me-2 text-dark"></i> 6 - 8 Passengers</li>
+                        <li class="mb-2"><i class="bi bi-luggage-fill me-2 text-dark"></i> Heavy luggage capacity</li>
+                        <li class="mb-2"><i class="bi bi-airplane me-2 text-primary"></i> Perfect for BIA drops</li>
+                    </ul>
+
+                    <a th:href="${session.role == 'PASSENGER' ? '/passenger' : '/login'}" class="btn btn-outline-success mt-auto w-100 rounded-3 fw-semibold">
+                        Book Van
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Gamana Section -->
+<section class="py-5 bg-white border-top border-bottom" id="why-us">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase">The Gamana Advantage</span>
+            <h2 class="fw-bold mt-2 display-6">Why Riders Choose Us Every Day</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Engineered from the ground up for convenience, transparency, and safety across Sri Lanka.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-success-subtle text-success">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">No Surge Pricing Shock</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Say goodbye to random 3x surge multipliers. We calculate upfront fares strictly based on approved base and kilometer rates.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-primary-subtle text-primary">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Strictly Verified Drivers</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Every driver profile, vehicle registration, and national ID is verified by our administration team before taking rides.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-warning-subtle text-warning">
+                        <i class="bi bi-radar"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Live Trip &amp; Driver Tracking</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Track driver dispatch, arrival, and journey progression in real-time right on your responsive passenger dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-danger-subtle text-danger">
+                        <i class="bi bi-pin-map-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Islandwide Coverage</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Operating in Colombo, Gampaha, Kandy, Galle, Matara, Negombo, Jaffna, and major tourist transit corridors.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-info-subtle text-info">
+                        <i class="bi bi-tags-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Discount Promo Codes</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Redeem promo coupons such as WELCOME50 or GAMANA100 for instant bill savings on everyday travel.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-box">
+                    <div class="feature-icon-circle bg-secondary-subtle text-dark">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Dedicated Local Support</h5>
+                    <p class="text-muted mb-0 small leading-relaxed">
+                        Sri Lankan customer support available round the clock to assist you with inquiries, lost items, and trip safety.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5" id="how-it-works">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase">Simple Process</span>
+            <h2 class="fw-bold mt-2 display-6">Book a Ride in 3 Easy Steps</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Get on the road in less than two minutes without hassle.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num-badge">1</div>
+                    <div class="fs-1 text-success mb-3 mt-2"><i class="bi bi-geo-alt"></i></div>
+                    <h5 class="fw-bold mb-2">Enter Pickup &amp; Destination</h5>
+                    <p class="text-muted small mb-0">
+                        Type in your pickup point and dropoff destination. Our system calculates optimal trip distance in kilometers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num-badge">2</div>
+                    <div class="fs-1 text-success mb-3 mt-2"><i class="bi bi-car-front-fill"></i></div>
+                    <h5 class="fw-bold mb-2">Pick Vehicle &amp; Confirm Fare</h5>
+                    <p class="text-muted small mb-0">
+                        Choose between Tuk, Bike, Car, or Van. View the estimated fare upfront and apply any available discount coupon.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num-badge">3</div>
+                    <div class="fs-1 text-success mb-3 mt-2"><i class="bi bi-check2-all"></i></div>
+                    <h5 class="fw-bold mb-2">Ride &amp; Pay Seamlessly</h5>
+                    <p class="text-muted small mb-0">
+                        Get matched with a nearby active driver. Sit back, relax, and complete your ride safely with transparent billing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Drive With Gamana Partner Section -->
+<section class="py-5" id="driver-section">
+    <div class="container py-3">
+        <div class="driver-cta-card">
+            <div class="row align-items-center g-4 position-relative" style="z-index: 2;">
+                <div class="col-lg-8">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill text-uppercase mb-3">Partner With Us</span>
+                    <h2 class="display-5 fw-bold text-white mb-3">
+                        Own a Tuk, Car, or Van? Drive &amp; Earn with Gamana.
+                    </h2>
+                    <p class="text-white-50 fs-6 mb-4" style="max-width: 600px;">
+                        Be your own boss. Drive on your own terms, enjoy low commission deductions, and receive swift payouts directly.
+                    </p>
+
+                    <div class="row g-3 mb-4 text-white">
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-currency-dollar fs-4 text-warning"></i>
+                                <div>
+                                    <div class="fw-bold">High Earnings</div>
+                                    <div class="small text-white-50">Low commission fees</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-clock-history fs-4 text-warning"></i>
+                                <div>
+                                    <div class="fw-bold">Flexible Hours</div>
+                                    <div class="small text-white-50">Work when you want</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-shield-check fs-4 text-warning"></i>
+                                <div>
+                                    <div class="fw-bold">Prompt Support</div>
+                                    <div class="small text-white-50">Driver hotline 24/7</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <a th:href="@{/driver/register}" class="btn btn-warning btn-lg px-4 fw-bold shadow-lg">
+                            <i class="bi bi-person-plus me-1"></i> Register as Driver
+                        </a>
+                        <a th:href="@{/driver/login}" class="btn btn-outline-light btn-lg px-4">
+                            Driver Login <i class="bi bi-box-arrow-in-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 text-center d-none d-lg-block">
+                    <div style="font-size: 8rem; opacity: 0.85;">🚖</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Passenger Reviews Section -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase">Testimonials</span>
+            <h2 class="fw-bold mt-2 display-6">Loved by Thousands Across Sri Lanka</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Here is what our daily riders and drivers have to say about Gamana.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div>
+                        <div class="text-warning mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="text-secondary fst-italic mb-3">
+                            "Gamana made airport travel from Kandy to Katunayake completely stress-free. The Van was immaculate, driver was on time, and the price was half of other agencies."
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 pt-3 border-top">
+                        <div class="rounded-circle bg-success-subtle text-success fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            SK
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark">Sunil Karunaratne</div>
+                            <div class="small text-muted">Kandy / Airport Transit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div>
+                        <div class="text-warning mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="text-secondary fst-italic mb-3">
+                            "I book Gamana Tuks every single morning for my office commute from Nugegoda to Fort. Quick dispatch and no driver cancel games. Highly recommended!"
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 pt-3 border-top">
+                        <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            DP
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark">Dilani Perera</div>
+                            <div class="small text-muted">Colombo Daily Commuter</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div>
+                        <div class="text-warning mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                        </div>
+                        <p class="text-secondary fst-italic mb-3">
+                            "As a driver partner in Galle, Gamana helped me maintain consistent daily trips without paying exorbitant commissions. Very fair system for drivers."
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 pt-3 border-top">
+                        <div class="rounded-circle bg-warning-subtle text-warning fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            KJ
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark">Kasun Jayalath</div>
+                            <div class="small text-muted">Partner Driver, Galle</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5" id="faq">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase">Got Questions?</span>
+            <h2 class="fw-bold mt-2 display-6">Frequently Asked Questions</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Everything you need to know about booking, driving, and fares on Gamana.
+            </p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion accordion-gamana" id="faqAccordion">
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <i class="bi bi-question-circle text-success me-2"></i> How do I book a ride on Gamana?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary small">
+                                Simply click <strong>"Book a Ride Now"</strong> or register an account. Enter your pickup address and destination, choose your vehicle category (Bike, Tuk, Car, or Van), and confirm your request. Nearby drivers will receive your offer instantly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                <i class="bi bi-question-circle text-success me-2"></i> How is the fare calculated?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary small">
+                                Fares are calculated transparently using an official formula: <code>Total = Base Fare + (Distance in KM × Per KM Rate) - Promo Discount</code>. We provide upfront pricing before you confirm the ride.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                <i class="bi bi-question-circle text-success me-2"></i> How do I register as a driver?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary small">
+                                Click on <strong>"Register as Driver"</strong>, provide your name, phone number, vehicle type (Bike, Tuk, Car, Van), and vehicle license plate number. Once registered, our admin team reviews and approves your account so you can begin accepting rides immediately.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                <i class="bi bi-question-circle text-success me-2"></i> How do promo codes work?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary small">
+                                Active promo codes (such as <code>WELCOME50</code>) can be entered during booking to deduct a fixed amount or percentage from your ride fare.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="landing-footer">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <a class="navbar-brand text-white mb-3 d-inline-flex align-items-center" th:href="@{/}">
+                    <i class="bi bi-geo-alt-fill text-warning fs-3 me-2"></i>
+                    <span class="fs-4 fw-bold">Gamana Taxi</span>
+                </a>
+                <p class="small text-white-50 pe-lg-4 mb-4">
+                    Gamana is Sri Lanka’s premier open mobility platform connecting daily passengers and drivers with speed, safety, and upfront honesty.
+                </p>
+                <div class="d-flex gap-3 text-white-50">
+                    <a href="#" class="fs-5 text-white-50 hover-text-white"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="fs-5 text-white-50 hover-text-white"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="fs-5 text-white-50 hover-text-white"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="fs-5 text-white-50 hover-text-white"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="#fleet">Our Fleet</a></li>
+                    <li><a href="#estimator">Fare Estimator</a></li>
+                    <li><a href="#why-us">Why Gamana</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h6>Portals</h6>
+                <ul class="list-unstyled small">
+                    <li><a th:href="@{/login}">Passenger Sign In</a></li>
+                    <li><a th:href="@{/register}">Passenger Sign Up</a></li>
+                    <li><a th:href="@{/driver/login}">Driver Sign In</a></li>
+                    <li><a th:href="@{/driver/register}">Driver Registration</a></li>
+                    <li><a th:href="@{/admin/login}">Admin Portal</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4">
+                <h6>Contact &amp; Assistance</h6>
+                <div class="small text-white-50 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-telephone-fill text-warning"></i>
+                        <span class="fw-bold text-white">+94 11 234 5678 (24/7 Hotline)</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-envelope-fill text-warning"></i>
+                        <span>support@gamana.lk</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-warning"></i>
+                        <span>Colombo 03, Western Province, Sri Lanka</span>
+                    </div>
+                </div>
+                <div class="p-3 rounded-3 bg-dark border border-secondary border-opacity-25 small">
+                    <span class="text-warning fw-bold"><i class="bi bi-shield-exclamation me-1"></i> Emergency Hotline:</span>
+                    <span class="text-white-50 ms-1">Dial 119 or 1990 for emergency medical services.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-4 border-top border-secondary border-opacity-25 text-center small text-white-50">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                    &copy; 2026 Gamana Taxi Platform. All rights reserved.
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="me-3">Designed for Sri Lanka 🇱🇰</span>
+                    <span>Privacy &amp; Terms</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Live Fare Estimator Client Logic -->
+<script>
+    // Rates mapping
+    const vehicleRates = {
+        'BIKE': { base: 50, perKm: 45, name: 'Bike' },
+        'TUK':  { base: 80, perKm: 65, name: 'Tuk Tuk' },
+        'CAR':  { base: 150, perKm: 95, name: 'Car / Sedan' },
+        'VAN':  { base: 220, perKm: 120, name: 'Van / MPV' }
+    };
+
+    let selectedType = 'TUK';
+    let currentDistance = 8;
+    let appliedDiscount = 0;
+
+    function selectEstimatorType(element) {
+        document.querySelectorAll('.estimator-type-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        selectedType = element.getAttribute('data-type');
+        calculateEstimate();
+    }
+
+    function updateEstimatorDistance(val) {
+        currentDistance = parseInt(val, 10);
+        document.getElementById('distanceDisplay').innerText = currentDistance + ' KM';
+        calculateEstimate();
+    }
+
+    function applyEstimatorPromo() {
+        const input = document.getElementById('promoInput');
+        const code = input.value.trim().toUpperCase();
+        const notice = document.getElementById('promoNotice');
+        const promoText = document.getElementById('promoText');
+        const promoRow = document.getElementById('promoRow');
+
+        if (code === 'WELCOME50') {
+            appliedDiscount = 50;
+            promoText.innerText = 'Promo WELCOME50 applied! Rs. 50 OFF';
+            notice.className = 'small mt-1 text-success';
+            promoRow.classList.remove('d-none');
+        } else if (code === 'GAMANA100') {
+            appliedDiscount = 100;
+            promoText.innerText = 'Promo GAMANA100 applied! Rs. 100 OFF';
+            notice.className = 'small mt-1 text-success';
+            promoRow.classList.remove('d-none');
+        } else if (code === '') {
+            appliedDiscount = 0;
+            notice.classList.add('d-none');
+            promoRow.classList.add('d-none');
+        } else {
+            appliedDiscount = 0;
+            promoText.innerText = 'Invalid promo code';
+            notice.className = 'small mt-1 text-danger';
+            notice.classList.remove('d-none');
+            promoRow.classList.add('d-none');
+        }
+        calculateEstimate();
+    }
+
+    function calculateEstimate() {
+        const rate = vehicleRates[selectedType] || vehicleRates['TUK'];
+        const base = rate.base;
+        const kmCost = currentDistance * rate.perKm;
+        const subtotal = base + kmCost;
+        const total = Math.max(base, subtotal - appliedDiscount);
+
+        document.getElementById('breakdownBase').innerText = 'Rs. ' + base;
+        document.getElementById('breakdownKm').innerText = 'Rs. ' + kmCost + ' (' + currentDistance + ' km @ Rs. ' + rate.perKm + ')';
+        document.getElementById('breakdownDiscount').innerText = '- Rs. ' + appliedDiscount;
+        document.getElementById('totalFareDisplay').innerText = 'Rs. ' + Math.round(total);
+    }
+
+    // Initial calculation on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateEstimate();
+    });
+</script>
+
+</body>
+</html>
