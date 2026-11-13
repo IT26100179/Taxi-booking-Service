@@ -64,4 +64,14 @@ public class VehicleRepository {
                 .orElse(0);
         return "v-" + (max + 1);
     }
+
+    public boolean deleteByDriver(String driverId) {
+        if (driverId == null || driverId.isBlank()) return false;
+        return store.withLock(() -> {
+            List<String[]> rows = store.read(FILE);
+            boolean removed = rows.removeIf(r -> r.length > 1 && r[1].equals(driverId));
+            if (removed) store.write(FILE, rows);
+            return removed;
+        });
+    }
 }

@@ -46,4 +46,14 @@ public class DriverProfileRepository {
             return null;
         });
     }
+
+    public boolean deleteByUserId(String userId) {
+        if (userId == null || userId.isBlank()) return false;
+        return store.withLock(() -> {
+            List<String[]> rows = store.read(FILE);
+            boolean removed = rows.removeIf(r -> r.length > 0 && r[0].equals(userId));
+            if (removed) store.write(FILE, rows);
+            return removed;
+        });
+    }
 }
