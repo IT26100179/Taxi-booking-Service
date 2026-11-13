@@ -53,4 +53,16 @@ public class PromoRepository {
             return null;
         });
     }
+
+    public boolean delete(String code) {
+        if (code == null || code.isBlank()) return false;
+        return store.withLock(() -> {
+            List<String[]> rows = store.read(FILE);
+            boolean removed = rows.removeIf(r -> r.length > 0 && r[0].equalsIgnoreCase(code.trim()));
+            if (removed) {
+                store.write(FILE, rows);
+            }
+            return removed;
+        });
+    }
 }
