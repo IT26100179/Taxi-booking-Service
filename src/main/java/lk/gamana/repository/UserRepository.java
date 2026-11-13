@@ -69,4 +69,14 @@ public class UserRepository {
                 .orElse(1000);
         return "u-" + (max + 1);
     }
+
+    public boolean delete(String id) {
+        if (id == null || id.isBlank()) return false;
+        return store.withLock(() -> {
+            List<String[]> rows = store.read(FILE);
+            boolean removed = rows.removeIf(r -> r.length > 0 && r[0].equals(id));
+            if (removed) store.write(FILE, rows);
+            return removed;
+        });
+    }
 }

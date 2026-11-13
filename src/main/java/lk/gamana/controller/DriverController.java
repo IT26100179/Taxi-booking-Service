@@ -169,6 +169,23 @@ public class DriverController {
         return "redirect:/driver";
     }
 
+    @PostMapping("/account/delete")
+    public String deleteAccount(HttpSession session, RedirectAttributes ra) {
+        String driverId = getDriverId(session);
+        if (driverId == null) {
+            return "redirect:/login";
+        }
+        if (rideRepository.isBusy(driverId)) {
+            ra.addFlashAttribute("error", "Cannot delete your account while on an active ride!");
+            return "redirect:/driver";
+        }
+        vehicleRepository.deleteByDriver(driverId);
+        profileRepository.deleteByUserId(driverId);
+        userRepository.delete(driverId);
+        session.invalidate();
+        return "redirect:/";
+    }
+
     @PostMapping("/area")
     public String updateArea(@RequestParam("currentPlace") String place,
                              HttpSession session,
