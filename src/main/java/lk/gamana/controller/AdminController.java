@@ -336,4 +336,19 @@ public class AdminController {
         ra.addFlashAttribute("success", "Promo code " + cleanCode + " created successfully!");
         return "redirect:/admin/promos";
     }
+
+    @PostMapping("/promos/{code}/delete")
+    public String deletePromo(@PathVariable("code") String code,
+                              HttpSession session,
+                              RedirectAttributes ra) {
+        String adminId = getAdminId(session);
+        boolean deleted = promoRepository.delete(code);
+        if (deleted) {
+            auditService.log(adminId, "DELETE_PROMO", code.toUpperCase());
+            ra.addFlashAttribute("info", "Promo code " + code.toUpperCase() + " was deleted successfully.");
+        } else {
+            ra.addFlashAttribute("error", "Promo code " + code.toUpperCase() + " not found.");
+        }
+        return "redirect:/admin/promos";
+    }
 }
