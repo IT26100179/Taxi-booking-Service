@@ -255,6 +255,28 @@ public class AdminController {
         return "redirect:/admin/drivers";
     }
 
+    @PostMapping("/drivers/{id}/remove")
+    public String removeDriver(@PathVariable("id") String driverId,
+                               HttpSession session,
+                               RedirectAttributes ra) {
+        String adminId = getAdminId(session);
+        Optional<User> target = userRepository.findById(driverId);
+        if (target.isEmpty() || target.get().getRole() != Role.DRIVER) {
+            ra.addFlashAttribute("error", "Driver " + driverId + " not found.");
+            return "redirect:/admin/drivers";
+        }
+        if (rideRepository.isBusy(driverId)) {
+            ra.addFlashAttribute("error", "Cannot remove driver while on an active trip!");
+            return "redirect:/admin/drivers";
+        }
+        vehicleRepository.deleteByDriver(driverId);
+        profileRepository.deleteByUserId(driverId);
+        userRepository.delete(driverId);
+        auditService.log(adminId, "REMOVE_DRIVER", driverId + " (" + target.get().getFullName() + ")");
+        ra.addFlashAttribute("info", "Driver " + driverId + " was removed permanently.");
+        return "redirect:/admin/drivers";
+    }
+
     @GetMapping("/rides")
     public String rides(@RequestParam(value = "status", required = false, defaultValue = "ALL") String filterStatus,
                         Model model) {
