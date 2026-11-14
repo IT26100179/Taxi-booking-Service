@@ -6,14 +6,14 @@ Gamana is an enterprise-grade ride-hailing and fleet management platform develop
 
 ## 👥 Team & Module Distribution
 
-| Member ID | Role / Module | Assigned CRUD Operations | OOP Concepts Applied | File Storage Entity |
-|---|---|---|---|---|
-| **IT26100472** | Core Architecture & Data Engine | Generic FileStore CRUD Engine, Model serialization | Encapsulation, Information Hiding, Abstraction | `FileStore.java` (Atomic thread-safe store) |
-| **IT26100311** | Authentication & Security | User Registration & Profile CRUD | Inheritance (`AuthException`), Polymorphism (`RoleInterceptor`), Hiding (SHA-256) | `data/users.txt` |
-| **IT26100552** | Driver Management Portal | Driver Application & Vehicle Allocation CRUD | Encapsulation, Model Abstraction | `data/driver_profiles.txt`, `data/vehicles.txt` |
-| **IT26100432** | Pricing Engine & Marketing | Fare Rate Configuration & Promo Code CRUD | Abstraction (`FareService`), Dynamic Polymorphism | `data/vehicle_types.txt`, `data/promos.txt` |
-| **IT26101197** | Passenger Booking & Trip Lifecycle | Ride Booking, Real-time Tracking & Ride Cancellation CRUD | Encapsulation, State Machine Pattern, Inheritance | `data/rides.txt` |
-| **IT26100179** | Admin Dashboard & System Integration | Driver Moderation (Approve/Suspend/Reinstate) & Audit Logs CRUD | Abstraction (`AuditService`), Information Hiding | `data/audit_logs.txt`, Platform Aggregates |
+| Member ID | Role / Module | Assigned CRUD Operations |
+|---|---|---|
+| **IT26100472** | Core Architecture & Data Engine | Generic FileStore CRUD Engine, Model serialization |
+| **IT26100311** | Authentication & Security | User Registration & Profile CRUD |
+| **IT26100552** | Driver Management Portal | Driver Application & Vehicle Allocation CRUD |
+| **IT26100432** | Pricing Engine & Marketing | Fare Rate Configuration & Promo Code CRUD |
+| **IT26101197** | Passenger Booking & Trip Lifecycle | Ride Booking, Real-time Tracking & Ride Cancellation CRUD |
+| **IT26100179** | Admin Dashboard & System Integration | Driver Moderation (Approve/Suspend/Reinstate) & Audit Logs CRUD |
 
 ---
 

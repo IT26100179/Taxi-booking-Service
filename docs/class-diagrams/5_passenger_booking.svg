@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1100" width="1500" height="1100" font-family="DejaVu Sans, Arial, sans-serif">
+<defs>
+<marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#111" stroke-width="1.2"/></marker>
+<marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11 Z" fill="#fff" stroke="#111" stroke-width="1.2"/></marker>
+<marker id="dfill" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1 5 L8 1 L15 5 L8 9 Z" fill="#111" stroke="#111"/></marker>
+<marker id="dhol" viewBox="0 0 16 10" refX="1" refY="5" markerWidth="16" markerHeight="10" orient="auto"><path d="M1 5 L8 1 L15 5 L8 9 Z" fill="#fff" stroke="#111" stroke-width="1.2"/></marker>
+</defs>
+<rect width="1500" height="1100" fill="#fff"/><rect width="1500" height="14" fill="#b3203f"/>
+<text x="48" y="62" font-size="22" font-weight="bold">5. Passenger Booking &amp; Trip Lifecycle</text>
+<text x="48" y="78" font-size="10" fill="#444">Gamana Taxi &amp; Cab Service Platform - UML Class Diagram</text>
+<polyline points="340.6,242.6 439.0,257.4" fill="none" stroke="#111" stroke-width="1.1" marker-end="url(#open)"/>
+<polyline points="926.2,259.8 999.0,249.6" fill="none" stroke="#111" stroke-width="1.1" marker-end="url(#open)"/>
+<polyline points="1110.6,339.0 936.6,620.1" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="730.9,479.0 767.4,619.0" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="936.6,884.1 999.0,922.0" fill="none" stroke="#111" stroke-width="1.1" marker-end="url(#open)"/>
+<polyline points="588.3,479.0 557.7,539.0" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="168.7,321.0 152.4,399.0" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="253.7,321.0 303.0,399.0" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="218.2,617.0 699.0,773.4" fill="none" stroke="#111" stroke-width="1.1" marker-end="url(#open)"/>
+<polyline points="926.2,353.3 1279.0,439.3" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1286.0,619.0 926.2,425.2" fill="none" stroke="#111" stroke-width="1.1" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<polyline points="1279.0,685.8 936.6,779.5" fill="none" stroke="#111" stroke-width="1.1" marker-end="url(#open)"/>
+<rect x="40.0" y="120.0" width="299.6" height="200.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="189.8" y="134.0" font-size="9.5" font-style="italic" text-anchor="middle">«controller»</text>
+<text x="189.8" y="151.0" font-size="12.5" font-weight="bold" text-anchor="middle">PassengerController</text>
+<line x1="40.0" y1="154.0" x2="339.6" y2="154.0" stroke="#b3203f"/>
+<text x="46.0" y="167.0" font-size="10.5">-RideService rideService</text>
+<text x="46.0" y="181.0" font-size="10.5">-RideRepository rideRepository</text>
+<text x="46.0" y="195.0" font-size="10.5">-UserRepository userRepository</text>
+<text x="46.0" y="209.0" font-size="10.5">-VehicleRepository vehicleRepository</text>
+<text x="46.0" y="223.0" font-size="10.5">-VehicleTypeRepository vehicleTypeRepository</text>
+<line x1="40.0" y1="230.0" x2="339.6" y2="230.0" stroke="#b3203f"/>
+<text x="46.0" y="243.0" font-size="10.5">+dashboard(HttpSession s, Model m) String</text>
+<text x="46.0" y="257.0" font-size="10.5">+bookRide(BookingForm f) String</text>
+<text x="46.0" y="271.0" font-size="10.5">+cancelRide(String rideId) String</text>
+<text x="46.0" y="285.0" font-size="10.5">+rateRide(String rideId, RateForm f) String</text>
+<text x="46.0" y="299.0" font-size="10.5">+history(HttpSession s, Model m) String</text>
+<text x="46.0" y="313.0" font-size="10.5">+apiStatus(HttpSession s) Map</text>
+<rect x="440.0" y="110.0" width="485.2" height="368.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="682.6" y="124.0" font-size="9.5" font-style="italic" text-anchor="middle">«service»</text>
+<text x="682.6" y="141.0" font-size="12.5" font-weight="bold" text-anchor="middle">RideService</text>
+<line x1="440.0" y1="144.0" x2="925.2" y2="144.0" stroke="#b3203f"/>
+<text x="446.0" y="157.0" font-size="10.5">-RideRepository rides</text>
+<text x="446.0" y="171.0" font-size="10.5">-UserRepository users</text>
+<text x="446.0" y="185.0" font-size="10.5">-DriverProfileRepository profiles</text>
+<text x="446.0" y="199.0" font-size="10.5">-VehicleRepository vehicles</text>
+<text x="446.0" y="213.0" font-size="10.5">-VehicleTypeRepository types</text>
+<text x="446.0" y="227.0" font-size="10.5">-PromoRepository promos</text>
+<text x="446.0" y="241.0" font-size="10.5">-FareService fares</text>
+<text x="446.0" y="255.0" font-size="10.5">-FileStore store</text>
+<line x1="440.0" y1="262.0" x2="925.2" y2="262.0" stroke="#b3203f"/>
+<text x="446.0" y="275.0" font-size="10.5">+book(String passengerId, BookingForm f) Ride</text>
+<text x="446.0" y="289.0" font-size="10.5">+dispatch(Ride r) void</text>
+<text x="446.0" y="303.0" font-size="10.5">+nextDriver(Ride r) Optional&lt;String&gt;</text>
+<text x="446.0" y="317.0" font-size="10.5">+expireOverdueOffers() void</text>
+<text x="446.0" y="331.0" font-size="10.5">+accept(String rideId, String driverId) Ride</text>
+<text x="446.0" y="345.0" font-size="10.5">+decline(String rideId, String driverId) void</text>
+<text x="446.0" y="359.0" font-size="10.5">+arrived(String rideId, String driverId) Ride</text>
+<text x="446.0" y="373.0" font-size="10.5">+startTrip(String rideId, String driverId) Ride</text>
+<text x="446.0" y="387.0" font-size="10.5">+completeTrip(String rideId, String driverId) Ride</text>
+<text x="446.0" y="401.0" font-size="10.5">+cancel(String rideId, String userId, boolean isPassenger) Ride</text>
+<text x="446.0" y="415.0" font-size="10.5">+rate(String rideId, String passengerId, int rating, String comment) void</text>
+<text x="446.0" y="429.0" font-size="10.5">+calculateDriverEarnings(String driverId) double</text>
+<text x="446.0" y="443.0" font-size="10.5">+calculateDriverRating(String driverId) double</text>
+<text x="446.0" y="457.0" font-size="10.5">+countCompletedRidesForDriver(String driverId) long</text>
+<text x="446.0" y="471.0" font-size="10.5">-move(Ride r, RideStatus next) void</text>
+<rect x="1000.0" y="110.0" width="363.6" height="228.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="1181.8" y="124.0" font-size="9.5" font-style="italic" text-anchor="middle">«repository»</text>
+<text x="1181.8" y="141.0" font-size="12.5" font-weight="bold" text-anchor="middle">RideRepository</text>
+<line x1="1000.0" y1="144.0" x2="1363.6" y2="144.0" stroke="#b3203f"/>
+<text x="1006.0" y="157.0" font-size="10.5">-FileStore store</text>
+<line x1="1000.0" y1="164.0" x2="1363.6" y2="164.0" stroke="#b3203f"/>
+<text x="1006.0" y="177.0" font-size="10.5">+findAll() List&lt;Ride&gt;</text>
+<text x="1006.0" y="191.0" font-size="10.5">+findById(String id) Optional&lt;Ride&gt;</text>
+<text x="1006.0" y="205.0" font-size="10.5">+findActiveByPassenger(String id) Optional&lt;Ride&gt;</text>
+<text x="1006.0" y="219.0" font-size="10.5">+findLastFinishedByPassenger(String id) Optional&lt;Ride&gt;</text>
+<text x="1006.0" y="233.0" font-size="10.5">+findActiveByDriver(String id) Optional&lt;Ride&gt;</text>
+<text x="1006.0" y="247.0" font-size="10.5">+findCurrentOfferForDriver(String id) Optional&lt;Ride&gt;</text>
+<text x="1006.0" y="261.0" font-size="10.5">+isBusy(String driverId) boolean</text>
+<text x="1006.0" y="275.0" font-size="10.5">+findByPassenger(String id) List&lt;Ride&gt;</text>
+<text x="1006.0" y="289.0" font-size="10.5">+findByDriver(String id) List&lt;Ride&gt;</text>
+<text x="1006.0" y="303.0" font-size="10.5">+findByStatus(RideStatus s) List&lt;Ride&gt;</text>
+<text x="1006.0" y="317.0" font-size="10.5">+save(Ride r) void</text>
+<text x="1006.0" y="331.0" font-size="10.5">+nextId() String</text>
+<rect x="700.0" y="620.0" width="235.6" height="384.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="817.8" y="638.0" font-size="12.5" font-weight="bold" text-anchor="middle">Ride</text>
+<line x1="700.0" y1="642.0" x2="935.6" y2="642.0" stroke="#b3203f"/>
+<text x="706.0" y="655.0" font-size="10.5">-String id</text>
+<text x="706.0" y="669.0" font-size="10.5">-String passengerId</text>
+<text x="706.0" y="683.0" font-size="10.5">-String driverId</text>
+<text x="706.0" y="697.0" font-size="10.5">-int typeId</text>
+<text x="706.0" y="711.0" font-size="10.5">-String promoCode</text>
+<text x="706.0" y="725.0" font-size="10.5">-String pickupPlace</text>
+<text x="706.0" y="739.0" font-size="10.5">-String dropPlace</text>
+<text x="706.0" y="753.0" font-size="10.5">-RideStatus status</text>
+<text x="706.0" y="767.0" font-size="10.5">-double distanceKm</text>
+<text x="706.0" y="781.0" font-size="10.5">-long fareEstimate</text>
+<text x="706.0" y="795.0" font-size="10.5">-long fareFinal</text>
+<text x="706.0" y="809.0" font-size="10.5">-String offeredTo</text>
+<text x="706.0" y="823.0" font-size="10.5">-Set&lt;String&gt; rejectedDrivers</text>
+<text x="706.0" y="837.0" font-size="10.5">-long offerDeadline</text>
+<text x="706.0" y="851.0" font-size="10.5">-LocalDateTime requestedAt</text>
+<text x="706.0" y="865.0" font-size="10.5">-LocalDateTime completedAt</text>
+<text x="706.0" y="879.0" font-size="10.5">-String paymentStatus</text>
+<text x="706.0" y="893.0" font-size="10.5">-int rating</text>
+<text x="706.0" y="907.0" font-size="10.5">-String ratingComment</text>
+<text x="706.0" y="921.0" font-size="10.5">-Double pickupLat, pickupLng</text>
+<text x="706.0" y="935.0" font-size="10.5">-Double dropLat, dropLng</text>
+<line x1="700.0" y1="942.0" x2="935.6" y2="942.0" stroke="#b3203f"/>
+<text x="706.0" y="955.0" font-size="10.5">+fromRow(String[] row) Ride</text>
+<text x="706.0" y="969.0" font-size="10.5">+toRow() String[]</text>
+<text x="706.0" y="983.0" font-size="10.5">+addRejected(String driverId) void</text>
+<text x="706.0" y="997.0" font-size="10.5">+getters / setters</text>
+<rect x="1000.0" y="880.0" width="110.0" height="152.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="1055.0" y="894.0" font-size="9.5" font-style="italic" text-anchor="middle">«enumeration»</text>
+<text x="1055.0" y="911.0" font-size="12.5" font-weight="bold" text-anchor="middle">RideStatus</text>
+<line x1="1000.0" y1="914.0" x2="1110.0" y2="914.0" stroke="#b3203f"/>
+<text x="1006.0" y="927.0" font-size="10.5">REQUESTED</text>
+<text x="1006.0" y="941.0" font-size="10.5">OFFERED</text>
+<text x="1006.0" y="955.0" font-size="10.5">ACCEPTED</text>
+<text x="1006.0" y="969.0" font-size="10.5">ARRIVED</text>
+<text x="1006.0" y="983.0" font-size="10.5">ONTRIP</text>
+<text x="1006.0" y="997.0" font-size="10.5">COMPLETED</text>
+<text x="1006.0" y="1011.0" font-size="10.5">CANCELLED</text>
+<text x="1006.0" y="1025.0" font-size="10.5">NODRIVER</text>
+<rect x="440.0" y="540.0" width="210.0" height="48.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="545.0" y="558.0" font-size="12.5" font-weight="bold" text-anchor="middle">RideException</text>
+<line x1="440.0" y1="562.0" x2="650.0" y2="562.0" stroke="#b3203f"/>
+<line x1="440.0" y1="568.0" x2="650.0" y2="568.0" stroke="#b3203f"/>
+<text x="446.0" y="581.0" font-size="10.5">+RideException(String message)</text>
+<rect x="40.0" y="400.0" width="197.2" height="130.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="138.6" y="414.0" font-size="9.5" font-style="italic" text-anchor="middle">«dto»</text>
+<text x="138.6" y="431.0" font-size="12.5" font-weight="bold" text-anchor="middle">BookingForm</text>
+<line x1="40.0" y1="434.0" x2="237.2" y2="434.0" stroke="#b3203f"/>
+<text x="46.0" y="447.0" font-size="10.5">-String pickup</text>
+<text x="46.0" y="461.0" font-size="10.5">-String drop</text>
+<text x="46.0" y="475.0" font-size="10.5">-int typeId</text>
+<text x="46.0" y="489.0" font-size="10.5">-String promo</text>
+<text x="46.0" y="503.0" font-size="10.5">-Double pickupLat, pickupLng</text>
+<text x="46.0" y="517.0" font-size="10.5">-Double dropLat, dropLng</text>
+<line x1="40.0" y1="524.0" x2="237.2" y2="524.0" stroke="#b3203f"/>
+<rect x="270.0" y="400.0" width="114.0" height="74.0" fill="#fbe6ea" stroke="#b3203f" stroke-width="1.2"/>
+<text x="327.0" y="414.0" font-size="9.5" font-style="italic" text-anchor="middle">«dto»</text>
+<text x="327.0" y="431.0" font-size="12.5" font-weight="bold" text-anchor="middle">RateForm</text>
+<line x1="270.0" y1="434.0" x2="384.0" y2="434.0" stroke="#b3203f"/>
+<text x="276.0" y="447.0" font-size="10.5">-int rating</text>
+<text x="276.0" y="461.0" font-size="10.5">-String comment</text>
+<line x1="270.0" y1="468.0" x2="384.0" y2="468.0" stroke="#b3203f"/>
+<rect x="40.0" y="560.0" width="178.0" height="56.0" fill="#f0f0f0" stroke="#666"/>
+<text x="129.0" y="575.0" font-size="11" font-weight="bold" text-anchor="middle">Component 2</text>
+<text x="46.0" y="589.0" font-size="9.5" fill="#333">Authentication &amp; Security</text>
+<line x1="40.0" y1="596.0" x2="218.0" y2="596.0" stroke="#666"/>
+<text x="46.0" y="609.0" font-size="10.5">User</text>
+<rect x="1280.0" y="420.0" width="184.4" height="84.0" fill="#f0f0f0" stroke="#666"/>
+<text x="1372.2" y="435.0" font-size="11" font-weight="bold" text-anchor="middle">Component 4</text>
+<text x="1286.0" y="449.0" font-size="9.5" fill="#333">Pricing Engine &amp; Marketing</text>
+<line x1="1280.0" y1="456.0" x2="1464.4" y2="456.0" stroke="#666"/>
+<text x="1286.0" y="469.0" font-size="10.5">FareService</text>
+<text x="1286.0" y="483.0" font-size="10.5">PromoRepository</text>
+<text x="1286.0" y="497.0" font-size="10.5">VehicleType</text>
+<rect x="1280.0" y="620.0" width="171.6" height="84.0" fill="#f0f0f0" stroke="#666"/>
+<text x="1365.8" y="635.0" font-size="11" font-weight="bold" text-anchor="middle">Component 3</text>
+<text x="1286.0" y="649.0" font-size="9.5" fill="#333">Driver Management Portal</text>
+<line x1="1280.0" y1="656.0" x2="1451.6" y2="656.0" stroke="#666"/>
+<text x="1286.0" y="669.0" font-size="10.5">DriverController</text>
+<text x="1286.0" y="683.0" font-size="10.5">DriverProfile</text>
+<text x="1286.0" y="697.0" font-size="10.5">Vehicle</text>
+<text x="1023.6" y="475.5" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">reads / writes</text>
+<text x="749.2" y="545.0" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">creates / moves</text>
+<text x="967.8" y="899.1" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">has</text>
+<text x="573.0" y="505.0" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">throws</text>
+<text x="160.5" y="356.0" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">binds</text>
+<text x="278.3" y="356.0" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">binds</text>
+<text x="458.6" y="691.2" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">places</text>
+<text x="230.3" y="634.5" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">1</text>
+<text x="686.9" y="761.9" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">*</text>
+<text x="1102.6" y="392.3" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">fare / discount</text>
+<text x="1106.1" y="518.1" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">accept / complete</text>
+<text x="1107.8" y="728.6" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">drives</text>
+<text x="1260.9" y="683.3" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">1</text>
+<text x="954.7" y="787.9" font-size="9.5" text-anchor="middle" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">0..*</text>
+<text x="48" y="1082" font-size="9" fill="#555">Hollow arrow = extends | Dashed hollow arrow = implements | Dashed arrow = uses / reads / writes | Filled diamond = composition | Hollow diamond = aggregation | Grey boxes list classes from other components</text>
+<text x="1452" y="1082" font-size="9" fill="#555" text-anchor="end">Page 5 of 6</text>
+</svg>
